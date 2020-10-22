@@ -1,0 +1,151 @@
+from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from Site.models import *
+import json
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def initUser(request):
+    args = {
+      'username': '',
+      'phone': '',
+      'group': '',
+      'is_control': False
+    }
+
+    user = Profile.objects.filter(user_id=request.user.id).first()
+
+    if user is not None:
+      args = {
+        'username': user.user.username,
+        'phone': user.phone,
+        'group': user.group.name,
+        'is_control': user.is_control
+      }
+    return HttpResponse(json.dumps(args))
+
+
+def login_view(request):
+    args = {}
+    post_data = json.loads(request.body.decode("utf-8"))
+    username = post_data['username']
+    password = post_data['password']
+
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            user = Profile.objects.filter(user_id=user.id).first()
+            if user is not None:
+              args = {
+                'username': user.user.username,
+                'phone': user.phone,
+                'group': user.group.name,
+                'is_control': user.is_control
+              }
+            else:
+               args['error'] =  True
+        else:
+          args['error'] =  True
+    return HttpResponse(json.dumps(args))
+
+
+def logout_view(request):
+    args = {}
+    logout(request)
+    return JsonResponse(args)
+
+
+def getListOfCity(request):
+    cities = list(City.objects.all().values())
+    return HttpResponse(json.dumps(cities))
+
+
+def getListOfPerson(request):
+    user = request.user
+    persons = UserForControl.objects.all().order_by('group_id')
+    if not user.profile.is_control:
+      persons = persons.filter(group_id=user.profile.group.id)
+    return HttpResponse(json.dumps(list(persons.values(
+      'id', 'group_id', 'group_id__name', 'name', 'rank', 'is_military', 'is_woman_with_children', 'city_id'
+    ))))
+
+
+def setListOfPerson(request):
+    user = request.user
+    data = json.loads(request.body)
+    persons = data['data']
+    list_id = []
+
+    for elem in persons:
+      person = UserForControl.objects.filter(pk=elem['id']).first()
+      if person is not None:
+        person.name = elem['name']
+        person.rank = elem['rank']
+        person.city = City.objects.filter(pk=elem['city_id']).first()
+        person.is_woman_with_children = elem['is_woman_with_children']
+        person.is_military = elem['is_military']
+        person.save()
+      else:
+        person = UserForControl.objects.create(
+          name=elem['name'],
+          rank = elem['rank'],
+          group = user.profile.group,
+          city = City.objects.filter(pk=elem['city_id']).first(),
+          is_woman_with_children = elem['is_woman_with_children'],
+          is_military = elem['is_military']
+        )
+      list_id.append(person.pk)
+    UserForControl.objects.exclude(pk__in=list_id).delete()
+    return HttpResponse(json.dumps({'status':'ok'}))
+
+
+def getListOfStatus(request):
+    status = list(Status.objects.all().values())
+    return HttpResponse(json.dumps(status))
+
+#TODO не сохранять всех пользователей с подразделений а только тех кто имеет статус
+def setListOfReport(request):
+    user = request.user
+    data = json.loads(request.body)
+    persons = data['data']
+    date = data['date']
+    date = date.split('T')[0]
+    print(date)
+    list_id = []
+    for person in persons:
+      obj = DayData.objects.filter(date=date).filter(userForControl_id = person['id']).first()
+      comment = person['comment'] if 'comment' in person else ''
+      print(comment)
+      status_id = person['status_id'] if 'status_id' in person else None
+      if obj is not None:
+        obj.status_id = status_id
+        obj.comment = comment
+        obj.save()
+      else:
+        obj = DayData.objects.create(
+        date=date,
+        comment = comment,
+        status_id = status_id,
+        userForControl_id = person['id']
+        )
+      list_id.append(obj.pk)
+    DayData.objects.filter(date=date).exclude(pk__in=list_id).delete()
+    return HttpResponse(json.dumps({'ok': True}))
+
+
+def getListOfReport(request):
+    user = request.user
+    data = json.loads(request.body)
+    date = data['date'].split('T')[0]
+    obj = DayData.objects.filter(date=date)
+    if not user.profile.is_control:
+      obj = obj.filter(userForControl_id__group_id = user.profile.group_id)
+    obj = list(obj.values('comment', 'status_id', 'status_id__name', 'userForControl_id'))
+    return HttpResponse(json.dumps(obj))
