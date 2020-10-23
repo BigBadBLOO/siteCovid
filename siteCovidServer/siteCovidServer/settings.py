@@ -55,7 +55,7 @@ ROOT_URLCONF = 'siteCovidServer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['C:/Users/Ефим/Desktop/siteCovid/siteCovidServer/build'],
+        'DIRS': ['build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

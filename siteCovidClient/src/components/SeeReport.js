@@ -42,10 +42,13 @@ function SeeReport({setShowBody, headerRef}) {
   const onWorkMilitaryWithChildren = onWorkMilitary.filter(el => el.is_woman_with_children);
   const onWorkPeopleWithChildren = onWorkPeople.filter(el => el.is_woman_with_children);
 
-  const withDisease = listOfPerson.filter(el => !!el.status_id);
+  let withDisease = listOfPerson.filter(el => !!el.status_id);
 
   const withNoInfectionAmb = withDisease.filter(el => el.status_id__name === 'Неинфекционное заболевание, амбулаторно');
   const withNoInfectionStat = withDisease.filter(el => el.status_id__name === 'Неинфекционное заболевание, стационарно');
+
+  const withPnevmoaniaAmb = withDisease.filter(el => el.status_id__name === 'Пневмония, амбулаторно');
+  const withPnevmoniaStat = withDisease.filter(el => el.status_id__name === 'Пневмония, стационарно');
 
   const withRespiratornoAmb = withDisease.filter(el => el.status_id__name === 'Респираторное заболевание, амбулаторно');
   const withRespiratornoStat = withDisease.filter(el => el.status_id__name === 'Респираторное заболевание, стационарно');
@@ -54,6 +57,9 @@ function SeeReport({setShowBody, headerRef}) {
 
   const withCovidAmb = withDisease.filter(el => el.status_id__name === 'Коронавирус, амбулаторно');
   const withCovidStat = withDisease.filter(el => el.status_id__name === 'Коронавирус, стационарно');
+
+  withDisease = [...withNoInfectionAmb, ...withNoInfectionStat, ...withPnevmoaniaAmb, ...withPnevmoniaStat,
+    ...withRespiratornoAmb, ...withRespiratornoStat, ...withKarantin, ...withCovidAmb, ...withCovidStat];
 
   return (
     <>
@@ -136,6 +142,40 @@ function SeeReport({setShowBody, headerRef}) {
           })}
           <p className="col-span-5 font-bold text-center border p-1">Амбулаторно</p>
           {withNoInfectionAmb.map((el, index) => {
+            return (
+              <>
+                <span className="border p-1">{index + 1}</span>
+                <span className="border p-1">{el.group_id__name}</span>
+                <span className="border p-1">{el.rank}</span>
+                <span className="border p-1">{el.name}</span>
+                <span className="border p-1"> {el.comment}</span>
+              </>
+            )
+          })}
+        </div>
+         <p className="font-bold text-center mt-8">
+          Пневмония {withPnevmoaniaAmb.length + withPnevmoniaStat.length} -  чел.
+        </p>
+        <div className="grid grid-cols-5 mt-1 text-center">
+          <span className="border p-1"> №</span>
+          <span className="border p-1"> Подразделение</span>
+          <span className="border p-1"> Воиское звание</span>
+          <span className="border p-1"> Фамилия, иницалы</span>
+          <span className="border p-1"> Диагноз</span>
+          <p className="col-span-5 font-bold text-center border p-1">Стационар</p>
+          {withPnevmoaniaAmb.map((el, index) => {
+            return (
+              <>
+                <span className="border p-1">{index + 1}</span>
+                <span className="border p-1">{el.group_id__name}</span>
+                <span className="border p-1">{el.rank}</span>
+                <span className="border p-1">{el.name}</span>
+                <span className="border p-1"> {el.comment}</span>
+              </>
+            )
+          })}
+          <p className="col-span-5 font-bold text-center border p-1">Амбулаторно</p>
+          {withPnevmoniaStat.map((el, index) => {
             return (
               <>
                 <span className="border p-1">{index + 1}</span>
