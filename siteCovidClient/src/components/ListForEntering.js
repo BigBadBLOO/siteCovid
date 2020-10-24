@@ -68,16 +68,14 @@ function ListForEntering({headerRef, setShowBody}) {
                 <p className="mt-2 text-center font-semibold text-2xl border p-1">{group.name}</p>
                 <div className="grid grid-cols-4 text-center">
                   <span className="border p-1">№</span>
-                  <span className="border p-1">Воиское звание</span>
                   <span className="border p-1">Фамилия, иницалы</span>
-                  <span className="border p-1">Примечание (время прохода)</span>
+                  <span className="border p-1 col-span-2">Примечание (время прохода)</span>
                   {byGroup.map((el, index) => {
                     return (
                       <>
                         <span className="border p-1">{index + 1}</span>
-                        <span className="border p-1">{el.rank_id__name}</span>
                         <span className="border p-1">{el.name}</span>
-                        <span className="border p-1"> {el.comment}</span>
+                        <span className="border p-1 col-span-2"> {el.comment}</span>
                       </>
                     )
                   })}
