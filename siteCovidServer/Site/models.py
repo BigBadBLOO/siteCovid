@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class UserGroup(models.Model):
     name = models.TextField(max_length=500, blank=True)
 
@@ -25,6 +26,18 @@ class Profile(models.Model):
         verbose_name = 'Профиль пользователя'
         verbose_name_plural = 'Профиль пользователей'
 
+
+class Rank(models.Model):
+  name = models.TextField(max_length=500, blank=True, verbose_name=" Название")
+
+  def __str__(self):
+    return self.name
+
+  class Meta:
+    verbose_name = 'Звание'
+    verbose_name_plural = 'Звания'
+
+
 class City(models.Model):
   name = models.TextField(max_length=500, blank=True, verbose_name=" Название")
 
@@ -35,10 +48,11 @@ class City(models.Model):
     verbose_name = 'Город'
     verbose_name_plural = 'Города'
 
+
 class UserForControl(models.Model):
     group = models.ForeignKey(UserGroup, on_delete=models.CASCADE, verbose_name="Подразделение пользователя")
     name = models.TextField(max_length=500, blank=True, verbose_name="ФИО")
-    rank = models.TextField(max_length=500, blank=True, verbose_name="Воиское звание")
+    rank = models.ForeignKey(Rank,  models.SET_NULL, blank=True, null=True,  verbose_name="Звание")
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="Город")
     is_military = models.BooleanField(default=True, verbose_name="Военный")
     is_woman_with_children = models.BooleanField(default=False, verbose_name="Женщина с детьми")

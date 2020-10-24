@@ -13,4 +13,5 @@ admin.site.register(Profile)
 admin.site.register(UserForControl)
 admin.site.register(Status)
 admin.site.register(DayData)
+admin.site.register(Rank)
 

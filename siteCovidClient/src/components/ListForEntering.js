@@ -8,6 +8,7 @@ function ListForEntering({headerRef, setShowBody}) {
   const printRef = createRef();
 
   const [listOfPerson, setListOfPerson] = useState([]);
+  const [listOfGroup, setListOfGroup] = useState([]);
 
   const getListOfReport = () => {
     workWithServer.getListOfReport({'date': startDate}).then(data => {
@@ -22,18 +23,19 @@ function ListForEntering({headerRef, setShowBody}) {
   };
 
   useEffect(() => {
+    workWithServer.getListOfGroup().then(setListOfGroup);
     workWithServer.getListOfPerson().then(data => {
       setListOfPerson(data);
       getListOfReport();
     });
+
   }, []);
 
   useEffect(() => {
     getListOfReport();
   }, [startDate]);
 
-  console.log(listOfPerson);
-  const onWorkAll = listOfPerson.filter(el => el.status_id === null || el.status_id === undefined);
+  const onWorkAll = listOfPerson.filter(el => !el.status_id);
 
   return (
     <>
@@ -56,24 +58,36 @@ function ListForEntering({headerRef, setShowBody}) {
         />
       </div>
       <p className="font-bold m-2 text-center text-2xl">Списки на проход на {startDate.toLocaleDateString('ru')}</p>
-      <div className="grid grid-cols-5  mt-1 text-center">
-        <span className="border p-1">№</span>
-        <span className="border p-1">Подразделение</span>
-        <span className="border p-1">Воиское звание</span>
-        <span className="border p-1">Фамилия, иницалы</span>
-        <span className="border p-1">Примечание</span>
-        {onWorkAll.map((el, index) => {
-          return (
-            <>
-              <span className="border p-1">{index + 1}</span>
-              <span className="border p-1">{el.group_id__name}</span>
-              <span className="border p-1">{el.rank}</span>
-              <span className="border p-1">{el.name}</span>
-              <span className="border p-1"> {el.comment}</span>
-            </>
-          )
-        })}
-      </div>
+      {listOfGroup.map(group => {
+        const byGroup = onWorkAll.filter(person => person.group_id === group.id);
+        return (
+          <>
+            {byGroup.length > 0
+              ?
+              <div style={{pageBreakAfter: 'always'}}>
+                <p className="mt-2 text-center font-semibold text-2xl border p-1">{group.name}</p>
+                <div className="grid grid-cols-4 text-center">
+                  <span className="border p-1">№</span>
+                  <span className="border p-1">Воиское звание</span>
+                  <span className="border p-1">Фамилия, иницалы</span>
+                  <span className="border p-1">Примечание (время прохода)</span>
+                  {byGroup.map((el, index) => {
+                    return (
+                      <>
+                        <span className="border p-1">{index + 1}</span>
+                        <span className="border p-1">{el.rank_id__name}</span>
+                        <span className="border p-1">{el.name}</span>
+                        <span className="border p-1"> {el.comment}</span>
+                      </>
+                    )
+                  })}
+                </div>
+              </div>
+              : <></>
+            }
+          </>
+        )
+      })}
     </>
   )
 }

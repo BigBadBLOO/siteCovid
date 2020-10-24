@@ -7,11 +7,12 @@ export default function ListOfPerson({setShowBody}) {
   const [toggleCleared, setToggleCleared] = useState(false);
   const [idNewRow, setIdNewRow] = useState(-1);
   const [listWithCity, setListWithCity] = useState([]);
+  const [listWithRank, setListWithRank] = useState([]);
   const [listOfPerson, setListOfPerson] = useState([]);
   let selectedRows = [];
 
   let refIs_military = createRef();
-  let refRank = createRef();
+  let refRank_id = createRef();
   let refName = createRef();
   let refCity_id = createRef();
   let refIs_woman_with_children = createRef();
@@ -19,12 +20,13 @@ export default function ListOfPerson({setShowBody}) {
   useEffect(() => {
     workWithServer.getListOfCity().then(setListWithCity);
     workWithServer.getListOfPerson().then(setListOfPerson);
+    workWithServer.getListOfRank().then(setListWithRank);
   }, []);
 
   useEffect(() => {
     listOfPerson.filter(el => el.is_editable).map(el => {
       refIs_military.current.value = el.is_military.toString();
-      refRank.current.value = el.rank;
+      refRank_id.current.value =Number(el.rank_id);
       refName.current.value = el.name;
       refCity_id.current.value = Number(el.city_id);
       refIs_woman_with_children.current.value = el.is_woman_with_children.toString()
@@ -48,12 +50,15 @@ export default function ListOfPerson({setShowBody}) {
     },
     {
       name: 'Воинское звание',
-      selector: 'rank',
+      selector: 'rank_id',
       sortable: true,
       cell: row => {
         return row.is_editable
-          ? <input ref={refRank} className="w-full h-full border-b border-blue-700 bg-white"/>
-          : <div>{row.rank}</div>;
+          ? <select ref={refRank_id} className="w-full h-full border-b border-blue-700 bg-white">
+            <option value="">Сбросить воинское звание</option>
+            {listWithRank.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+          </select>
+          : <div>{(listWithRank.filter(el => el.id === Number(row.rank_id))).map(el => el.name)}</div>;
       },
     },
     {
@@ -102,7 +107,7 @@ export default function ListOfPerson({setShowBody}) {
               if (el.id === row.id) {
                 el.is_editable = false;
                 el.is_military = refIs_military.current.value === 'true';
-                el.rank = refRank.current.value;
+                el.rank_id = refRank_id.current.value;
                 el.name = refName.current.value;
                 el.city_id = refCity_id.current.value;
                 el.is_woman_with_children = refIs_woman_with_children.current.value === 'true'
@@ -130,8 +135,6 @@ export default function ListOfPerson({setShowBody}) {
         id: idNewRow,
         is_military: true,
         name: '',
-        rank: '',
-        city: 1,
         is_woman_with_children: false,
         is_editable: true
       }, ...listOfPerson.map((el => {

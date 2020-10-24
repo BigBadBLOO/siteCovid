@@ -11,18 +11,18 @@ function MakeReport({setShowBody}) {
   const refStatus = createRef();
   const refComment = createRef();
 
-  const [listStatus, setListStatus] = useState([])
-  const [listOfPerson, setListOfPerson] = useState([])
+  const [listStatus, setListStatus] = useState([]);
+  const [listOfPerson, setListOfPerson] = useState([]);
 
   useEffect(() => {
-    workWithServer.getListOfPerson().then(setListOfPerson)
-    workWithServer.getListOfStatus().then(setListStatus)
-  }, [])
+    workWithServer.getListOfPerson().then(setListOfPerson);
+    workWithServer.getListOfStatus().then(setListStatus);
+  }, []);
 
   const columns = [
     {
       name: 'Воинское звание',
-      selector: 'rank',
+      selector: 'rank_id__name',
       sortable: true,
     },
     {
@@ -52,7 +52,7 @@ function MakeReport({setShowBody}) {
       cell: row => {
         const elem = row.is_editable
           ? <input ref={refComment} className="w-full h-full border-b border-blue-700 bg-white"/>
-          : <div>{row.comment}</div>
+          : <div>{row.comment}</div>;
         if (row.is_editable) setTimeout(() => refComment.current.value = row.comment ? row.comment : '', 200)
         return elem
       },
@@ -66,8 +66,8 @@ function MakeReport({setShowBody}) {
           ? <Button type="warning" text="Применить" onClick={() => {
             setListOfPerson(prev => prev.map(el => {
               if (el.id === row.id) {
-                el.is_editable = false
-                el.comment = refComment.current.value
+                el.is_editable = false;
+                el.comment = refComment.current.value;
                 el.status_id = refStatus.current.value
               }
               return el
@@ -90,7 +90,7 @@ function MakeReport({setShowBody}) {
         'date': startDate
       }
         ).then(() => setShowBody('nothing'))
-    }}/>
+    }}/>;
 
   return (
     <div>
@@ -103,10 +103,10 @@ function MakeReport({setShowBody}) {
           workWithServer.getListOfReport({'date': startDate}).then(data =>{
             setListOfPerson(prevState => {
               return [...prevState.map(el => {
-                let index = data.filter(obj => obj.userForControl_id === el.id)
-                if(index.length > 0) return {...el, ...index[0]}
-                delete el['comment']
-                delete el['status_id']
+                let index = data.filter(obj => obj.userForControl_id === el.id);
+                if(index.length > 0) return {...el, ...index[0]};
+                delete el['comment'];
+                delete el['status_id'];
                 return el
               })]
             })

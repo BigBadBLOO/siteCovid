@@ -27,6 +27,12 @@ const workWithServer = () => {
     getListOfReport: (data) => {
       return requestPost('/getListOfReport/', data)
     },
+    getListOfRank: (data) => {
+      return requestPost('/getListOfRank/', data)
+    },
+    getListOfGroup: (data) => {
+      return requestPost('/getListOfGroup/', data)
+    },
   }
 };
 
