@@ -33,7 +33,7 @@ function ListForEntering({headerRef, setShowBody}) {
   }, [startDate]);
 
   console.log(listOfPerson);
-  const onWorkAll = listOfPerson.filter(el => !el.status_id);
+  const onWorkAll = listOfPerson.filter(el => el.status_id === null || el.status_id === undefined);
 
   return (
     <>

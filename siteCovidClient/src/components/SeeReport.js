@@ -36,9 +36,9 @@ function SeeReport({setShowBody, headerRef}) {
     getListOfReport();
   }, [startDate]);
 
-  const onWorkAll = listOfPerson.filter(el => !el.status_id);
+  const onWorkAll = listOfPerson.filter(el => el.status_id === null || el.status_id === undefined);
   const onWorkMilitary = onWorkAll.filter(el => el.is_military);
-  const onWorkPeople = onWorkAll.filter(el => !el.is_military);
+  const onWorkPeople = onWorkAll.filter(el => el.is_military === false);
   const onWorkMilitaryWithChildren = onWorkMilitary.filter(el => el.is_woman_with_children);
   const onWorkPeopleWithChildren = onWorkPeople.filter(el => el.is_woman_with_children);
 
