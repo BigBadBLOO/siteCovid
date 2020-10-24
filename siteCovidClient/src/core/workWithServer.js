@@ -41,22 +41,21 @@ function status(response) {
 }
 
 async function request(url, body) {
-  const response = await fetch(url, body).then(status);
-  response['csrf_token'] && setCookie('csrftoken', response['csrf_token']);
-  return response;
+  return await fetch(url, body).then(status);
 }
 
 async function requestPost(url, data) {
   const headers = {
     'Accept': 'application/json, text/plain, */*',
-    'Content-Type': 'application/json',
+    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    'X-Requested-With': 'XMLHttpRequest',
   };
   let csrfmiddlewaretoken = getCookie('csrftoken');
   csrfmiddlewaretoken && (headers['X-CSRFToken'] = csrfmiddlewaretoken);
   return await request(url, {
-    // credentials: 'include',
+    credentials: 'include',
     method: 'POST',
-    // mode: 'same-origin',
+    mode: 'same-origin',
     headers: headers,
     body: JSON.stringify(data)
   })

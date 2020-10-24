@@ -50,9 +50,9 @@ def login_view(request):
                 'is_control': user.is_control
               }
             else:
-               args['error'] =  True
+               args['error'] = True
         else:
-          args['error'] =  True
+          args['error'] = True
     return HttpResponse(json.dumps(args))
 
 
