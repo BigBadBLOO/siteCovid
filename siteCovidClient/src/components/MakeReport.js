@@ -14,8 +14,25 @@ function MakeReport({setShowBody}) {
   const [listStatus, setListStatus] = useState([]);
   const [listOfPerson, setListOfPerson] = useState([]);
 
+  const dataByday = () => {
+    workWithServer.getListOfReport({'date': startDate}).then(data => {
+      setListOfPerson(prevState => {
+        return [...prevState.map(el => {
+          let index = data.filter(obj => obj.userForControl_id === el.id);
+          if (index.length > 0) return {...el, ...index[0]};
+          delete el['comment'];
+          delete el['status_id'];
+          return el
+        })]
+      })
+    })
+  };
+
   useEffect(() => {
-    workWithServer.getListOfPerson().then(setListOfPerson);
+    workWithServer.getListOfPerson().then((data) => {
+      setListOfPerson(data);
+      dataByday();
+    });
     workWithServer.getListOfStatus().then(setListStatus);
   }, []);
 
@@ -83,14 +100,6 @@ function MakeReport({setShowBody}) {
     },
   ];
 
-  const actions =
-    <Button className="text-base" type='warning' text="Создать" onClick={() => {
-      workWithServer.setListOfReport({
-        'data': listOfPerson,
-        'date': startDate
-      }
-        ).then(() => setShowBody('nothing'))
-    }}/>;
 
   return (
     <div>
@@ -98,19 +107,16 @@ function MakeReport({setShowBody}) {
         <Button className="" type='primary' text="Назад" onClick={() => {
           setShowBody('nothing')
         }}/>
+        <Button className="text-base" type='success' text="Сохранить" onClick={() => {
+          workWithServer.setListOfReport({
+              'data': listOfPerson,
+              'date': startDate
+            }
+          ).then(() => setShowBody('nothing'))
+        }}/>
 
         <Button className="" type='primary' text="Использовать данные за:" onClick={() => {
-          workWithServer.getListOfReport({'date': startDate}).then(data =>{
-            setListOfPerson(prevState => {
-              return [...prevState.map(el => {
-                let index = data.filter(obj => obj.userForControl_id === el.id);
-                if(index.length > 0) return {...el, ...index[0]};
-                delete el['comment'];
-                delete el['status_id'];
-                return el
-              })]
-            })
-          })
+          dataByday();
         }}/>
 
         <DatePicker
@@ -126,7 +132,7 @@ function MakeReport({setShowBody}) {
         data={listOfPerson}
         pagination={true}
         contextMessage={{singular: 'строка', plural: 'строк', message: 'выбрано'}}
-        actions={actions}
+        // actions={actions}
       />
     </div>
   )
