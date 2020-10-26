@@ -66,17 +66,19 @@ function ListForEntering({headerRef, setShowBody}) {
               ?
               <div style={{pageBreakAfter: 'always'}}>
                 <p className="mt-2 text-center font-semibold text-2xl border p-1">{group.name}</p>
-                <div className="grid grid-cols-4 text-center">
-                  <span className="border p-1">№</span>
-                  <span className="border p-1">Фамилия, иницалы</span>
-                  <span className="border p-1 col-span-2">Примечание (время прохода)</span>
+                <div className="text-center">
+                  <div className="flex">
+                    <p className="border p-1 inline-block w-1/4">№</p>
+                    <p className="border p-1 inline-block w-1/4">Фамилия, иницалы</p>
+                    <p className="border p-1 inline-block w-2/4">Примечание (время прохода)</p>
+                  </div>
                   {byGroup.map((el, index) => {
                     return (
-                      <>
-                        <span className="border p-1">{index + 1}</span>
-                        <span className="border p-1">{el.name}</span>
-                        <span className="border p-1 col-span-2"> {el.comment}</span>
-                      </>
+                      <div className="flex">
+                        <span className="border inline-block w-1/4">{index + 1}</span>
+                        <span className="border inline-block w-1/4">{el.name}</span>
+                        <span className="border inline-block w-2/4"> {el.comment}</span>
+                      </div>
                     )
                   })}
                 </div>

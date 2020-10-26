@@ -10,16 +10,16 @@ function makeTableData(mass) {
     mass.length > 0
       ? mass.map((el, index) => {
         return (
-          <>
-            <span className="border p-1">{index + 1}</span>
-            <span className="border p-1">{el.group_id__name}</span>
-            <span className="border p-1">{el.rank_id__name}</span>
-            <span className="border p-1">{el.name}</span>
-            <span className="border p-1"> {el.comment}</span>
-          </>
+          <div className="flex">
+            <p className="border p-1 inline-block w-1/5">{index + 1}</p>
+            <p className="border p-1 inline-block w-1/5">{el.group_id__name}</p>
+            <p className="border p-1 inline-block w-1/5">{el.rank_id__name}</p>
+            <p className="border p-1 inline-block w-1/5">{el.name}</p>
+            <p className="border p-1 inline-block w-1/5"> {el.comment}</p>
+          </div>
         )
       })
-      : <span className="col-span-5 text-center border p-1"> Отсутствуют</span>
+      : <p className="text-center border p-1"> Отсутствуют</p>
   )
 }
 
@@ -116,20 +116,25 @@ function SeeReport({setShowBody, headerRef}) {
           гражданские - <b>{onWorkPeople.length}</b> чел., из них женщин с детьми до 14 лет
           - {onWorkPeopleWithChildren.length} чел.
         </p>
-        <div className="grid grid-cols-3 mt-1 text-center">
-          <span className="border p-1"> ППД</span>
-          <span className="border p-1"> Военнослужащих</span>
-          <span className="border p-1"> Гр. персонала</span>
+        <div className="mt-1 text-center">
+          <div className="flex">
+            <p className="border p-1 inline-block w-1/3"> ППД</p>
+            <p className="border p-1 inline-block w-1/3"> Военнослужащих</p>
+            <p className="border p-1 inline-block w-1/3"> Гр. персонала</p>
+          </div>
           {listOfCity.map(el => {
             return (
-              <>
-                <span className="border p-1">{el.name}</span>
-                <span className="border p-1"> {onWorkMilitary.filter(obj => obj.city_id === el.id).length}</span>
-                <span className="border p-1">{onWorkPeople.filter(obj => obj.city_id === el.id).length}</span>
-              </>
+              <div className="flex">
+                <span className="border p-1 inline-block w-1/3">{el.name}</span>
+                <span
+                  className="border p-1 inline-block w-1/3"> {onWorkMilitary.filter(obj => obj.city_id === el.id).length}</span>
+                <span
+                  className="border p-1 inline-block w-1/3">{onWorkPeople.filter(obj => obj.city_id === el.id).length}</span>
+              </div>
             )
           })}
         </div>
+
         <p>
           <b>2. Число заболевших:</b><br/>
           Всего - <b>{withDisease.length}</b> <br/>
@@ -141,72 +146,84 @@ function SeeReport({setShowBody, headerRef}) {
           ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionAmb.filter(el => el.is_military).length} в/сл,
           {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionAmb.filter(el => !el.is_military).length})
         </p>
-        <div className="grid grid-cols-5 mt-1 text-center">
-          <span className="border p-1"> №</span>
-          <span className="border p-1"> Подразделение</span>
-          <span className="border p-1"> Воиское звание</span>
-          <span className="border p-1"> Фамилия, иницалы</span>
-          <span className="border p-1"> Диагноз</span>
-          <p className="col-span-5 font-bold text-center border p-1">Стационар</p>
+        <div className="mt-1 text-center">
+          <div className="flex">
+            <p className="border p-1 inline-block w-1/5"> №</p>
+            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
+            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
+            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
+            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+          </div>
+          <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withNoInfectionStat)}
-          <p className="col-span-5 font-bold text-center border p-1">Амбулаторно</p>
+          <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withNoInfectionAmb)}
         </div>
         <p className="font-bold text-center mt-8">
           Пневмония {withPnevmoniaAmb.length + withPnevmoniaStat.length} - чел.
         </p>
-        <div className="grid grid-cols-5 mt-1 text-center">
-          <span className="border p-1"> №</span>
-          <span className="border p-1"> Подразделение</span>
-          <span className="border p-1"> Воиское звание</span>
-          <span className="border p-1"> Фамилия, иницалы</span>
-          <span className="border p-1"> Диагноз</span>
-          <p className="col-span-5 font-bold text-center border p-1">Стационар</p>
+        <div className=" mt-1 text-center">
+          <div className="flex">
+            <p className="border p-1 inline-block w-1/5"> №</p>
+            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
+            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
+            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
+            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+          </div>
+          <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withPnevmoniaStat)}
-          <p className="col-span-5 font-bold text-center border p-1">Амбулаторно</p>
+          <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withPnevmoniaAmb)}
         </div>
+
         <p className="font-bold text-center mt-8">
           Острые респираторные вирусные инфекции (не коронавирусная
           инфекция) {withRespiratornoStat.length + withRespiratornoAmb.length} - чел.
         </p>
-        <div className="grid grid-cols-5 mt-1 text-center">
-          <span className="border p-1"> №</span>
-          <span className="border p-1"> Подразделение</span>
-          <span className="border p-1"> Воиское звание</span>
-          <span className="border p-1"> Фамилия, иницалы</span>
-          <span className="border p-1"> Диагноз</span>
-          <p className="col-span-5 font-bold text-center border p-1">Стационар</p>
+        <div className="mt-1 text-center">
+          <div className="flex">
+            <p className="border p-1 inline-block w-1/5"> №</p>
+            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
+            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
+            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
+            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+          </div>
+          <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withRespiratornoStat)}
-          <p className="col-span-5 font-bold text-center border p-1">Амбулаторно</p>
+          <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withRespiratornoAmb)}
         </div>
+
         <p className="text-center mt-8">
           <b>Число находящихся на карантине (изоляция):</b><br/>
           Всего - <b>{withKarantin.length}</b>, в том числе:<br/>
           военнослужащие - <b>{withKarantin.filter(el => el.is_military).length}</b> чел.;
           гр. персонал - <b>{withKarantin.filter(el => !el.is_military).length}</b> чел.
         </p>
-        <div className="grid grid-cols-5 mt-1 text-center">
-          <span className="border p-1"> №</span>
-          <span className="border p-1"> Подразделение</span>
-          <span className="border p-1"> Воиское звание</span>
-          <span className="border p-1"> Фамилия и иницалы</span>
-          <span className="border p-1"> Причина</span>
+        <div className="mt-1 text-center">
+          <div className="flex">
+            <p className="border p-1 inline-block w-1/5"> №</p>
+            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
+            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
+            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
+            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+          </div>
           {makeTableData(withKarantin)}
         </div>
         <p className="font-bold text-center mt-8">
           Коронавирусная инфекция - {withCovidAmb.length + withCovidStat.length} чел.
         </p>
-        <div className="grid grid-cols-5 mt-1 text-center">
-          <span className="border p-1"> №</span>
-          <span className="border p-1"> Подразделение</span>
-          <span className="border p-1"> Воиское звание</span>
-          <span className="border p-1"> Фамилия и иницалы</span>
-          <span className="border p-1"> Причина</span>
-          <p className="col-span-5 font-bold text-center border p-1">Стационар</p>
+        <div className="mt-1 text-center">
+          <div className="flex">
+            <p className="border p-1 inline-block w-1/5"> №</p>
+            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
+            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
+            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
+            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+          </div>
+          <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withCovidStat)}
-          <p className="col-span-5 font-bold text-center border p-1">Амбулаторно</p>
+          <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withCovidAmb)}
         </div>
       </div>
