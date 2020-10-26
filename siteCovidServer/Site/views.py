@@ -109,7 +109,7 @@ def setListOfPerson(request):
                 name=elem['name'],
                 rank_id=rank_id,
                 group=user.profile.group,
-                city=city_id,
+                city_id=city_id,
                 is_woman_with_children=elem['is_woman_with_children'],
                 is_military=elem['is_military']
             )
