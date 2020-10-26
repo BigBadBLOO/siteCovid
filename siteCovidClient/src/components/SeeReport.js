@@ -1,5 +1,5 @@
 import React, {createRef, useEffect, useState} from "react";
-import Button from "./Button";
+import Button, {InputForDatePicker} from "./Button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import workWithServer from "../core/workWithServer";
@@ -96,7 +96,8 @@ function SeeReport({setShowBody, headerRef}) {
           className="rounded border border-blue-700 p-1"
           selected={startDate}
           onChange={setStartDate}
-          dateFormat="dd-MM-yyyy"
+          dateFormat="dd.MM.yyyy"
+          customInput={<InputForDatePicker/>}
         />
       </div>
 
@@ -141,10 +142,9 @@ function SeeReport({setShowBody, headerRef}) {
           в том числе:
         </p>
         <p className="font-bold text-center ">
-          Не ОРВИ {withNoInfectionAmb.length + withNoInfectionStat.length} - чел
-          .
+          Не ОРВИ {withNoInfectionAmb.length + withNoInfectionStat.length} - чел.
           ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionAmb.filter(el => el.is_military).length} в/сл,
-          {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionAmb.filter(el => !el.is_military).length})
+          {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionAmb.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
           <div className="flex">
@@ -152,7 +152,7 @@ function SeeReport({setShowBody, headerRef}) {
             <p className="border p-1 inline-block w-1/5"> Подразделение</p>
             <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
             <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
           </div>
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withNoInfectionStat)}
@@ -161,6 +161,8 @@ function SeeReport({setShowBody, headerRef}) {
         </div>
         <p className="font-bold text-center mt-8">
           Пневмония {withPnevmoniaAmb.length + withPnevmoniaStat.length} - чел.
+          ({withPnevmoniaAmb.filter(el => el.is_military).length + withPnevmoniaStat.filter(el => el.is_military).length} в/сл,
+          {withPnevmoniaAmb.filter(el => !el.is_military).length + withPnevmoniaStat.filter(el => !el.is_military).length} гп)
         </p>
         <div className=" mt-1 text-center">
           <div className="flex">
@@ -168,7 +170,7 @@ function SeeReport({setShowBody, headerRef}) {
             <p className="border p-1 inline-block w-1/5"> Подразделение</p>
             <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
             <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
           </div>
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withPnevmoniaStat)}
@@ -179,6 +181,8 @@ function SeeReport({setShowBody, headerRef}) {
         <p className="font-bold text-center mt-8">
           Острые респираторные вирусные инфекции (не коронавирусная
           инфекция) {withRespiratornoStat.length + withRespiratornoAmb.length} - чел.
+          ({withRespiratornoStat.filter(el => el.is_military).length + withRespiratornoAmb.filter(el => el.is_military).length} в/сл,
+          {withRespiratornoStat.filter(el => !el.is_military).length + withRespiratornoAmb.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
           <div className="flex">
@@ -186,7 +190,7 @@ function SeeReport({setShowBody, headerRef}) {
             <p className="border p-1 inline-block w-1/5"> Подразделение</p>
             <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
             <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
           </div>
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withRespiratornoStat)}
@@ -194,11 +198,10 @@ function SeeReport({setShowBody, headerRef}) {
           {makeTableData(withRespiratornoAmb)}
         </div>
 
-        <p className="text-center mt-8">
-          <b>Число находящихся на карантине (изоляция):</b><br/>
-          Всего - <b>{withKarantin.length}</b>, в том числе:<br/>
-          военнослужащие - <b>{withKarantin.filter(el => el.is_military).length}</b> чел.;
-          гр. персонал - <b>{withKarantin.filter(el => !el.is_military).length}</b> чел.
+        <p className="font-bold text-center mt-8">
+          Число находящихся на карантине (изоляция) {withKarantin.length} - чел.
+          ({withKarantin.filter(el => el.is_military).length} в/сл,
+          {withKarantin.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
           <div className="flex">
@@ -206,12 +209,14 @@ function SeeReport({setShowBody, headerRef}) {
             <p className="border p-1 inline-block w-1/5"> Подразделение</p>
             <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
             <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
           </div>
           {makeTableData(withKarantin)}
         </div>
         <p className="font-bold text-center mt-8">
           Коронавирусная инфекция - {withCovidAmb.length + withCovidStat.length} чел.
+          ({withCovidAmb.filter(el => el.is_military).length + withCovidStat.filter(el => el.is_military).length} в/сл,
+          {withCovidAmb.filter(el => !el.is_military).length + withCovidStat.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
           <div className="flex">
@@ -219,7 +224,7 @@ function SeeReport({setShowBody, headerRef}) {
             <p className="border p-1 inline-block w-1/5"> Подразделение</p>
             <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
             <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Диагноз</p>
+            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
           </div>
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withCovidStat)}

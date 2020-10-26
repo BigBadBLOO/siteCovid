@@ -35,6 +35,14 @@ export default function ListOfPerson({setShowBody}) {
 
   const columns = [
     {
+      name: '№',
+      selector: 'id',
+      sortable: true,
+      cell: (row, index) => {
+        return <div>{index + 1}</div>;
+      },
+    },
+    {
       name: 'Военнослужащий или гр. персонал',
       selector: 'is_military',
       sortable: true,
@@ -172,6 +180,13 @@ export default function ListOfPerson({setShowBody}) {
         contextActions={contextActions}
         actions={actions}
         clearSelectedRows={toggleCleared}
+        paginationComponentOptions = {{
+          rowsPerPageText: 'Строк на странице:',
+          rangeSeparatorText: 'из',
+          noRowsPerPage: false,
+          selectAllRowsItem: false,
+          selectAllRowsItemText: 'Все'
+        }}
       />
     </div>
   )

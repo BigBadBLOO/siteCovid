@@ -16,7 +16,7 @@ function App({user, initUser}) {
 					initUser({...user, is_initial: true})
 				})
 		}, []
-	)
+	);
 
 	return (
 		user.is_initial

@@ -14,9 +14,9 @@ Button.propTypes = {
 export default function Button({icon, type, text, onClick, className, disabled, classNameText}) {
   const classes = [
     'rounded-md px-2 py-1 m-2 place-content-center focus:outline-none '
-  ]
+  ];
 
-  classes.push(className)
+  classes.push(className);
 
   if (type === 'primary') {
     classes.push('text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100')
@@ -36,4 +36,21 @@ export default function Button({icon, type, text, onClick, className, disabled, 
       <span className={"my-auto " + classNameText}>{text}</span>
     </button>
   )
+}
+
+
+const InputForDatePicker = (props) => {
+  return (
+    <input
+      className="rounded border border-blue-700 p-1"
+      onClick={props.onClick}
+      value={props.value}
+      type="text"
+      readOnly={true}
+    />
+  )
+};
+
+export {
+  InputForDatePicker
 }

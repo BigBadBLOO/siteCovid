@@ -6,6 +6,7 @@ import ListOfPerson from "./ListOfPerson";
 import MakeReport from "./MakeReport";
 import SeeReport from "./SeeReport";
 import ListForEntering from "./ListForEntering";
+import Loader from "./Loader";
 
 
 function Home({user}) {
@@ -66,6 +67,7 @@ function Home({user}) {
 
         }
       </div>
+      <Loader/>
     </>
   )
 }

@@ -1,5 +1,5 @@
 import React, {createRef, useEffect, useState} from 'react'
-import Button from "./Button";
+import Button, {InputForDatePicker} from "./Button";
 import DatePicker from "react-datepicker";
 import workWithServer from "../core/workWithServer";
 
@@ -54,7 +54,8 @@ function ListForEntering({headerRef, setShowBody}) {
           className="rounded border border-blue-700 p-1"
           selected={startDate}
           onChange={date => setStartDate(date)}
-          dateFormat="dd-MM-yyyy"
+          dateFormat="dd.MM.yyyy"
+          customInput={<InputForDatePicker/>}
         />
       </div>
       <p className="font-bold m-2 text-center text-2xl">Списки на проход на {startDate.toLocaleDateString('ru')}</p>

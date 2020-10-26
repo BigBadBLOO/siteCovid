@@ -1,6 +1,6 @@
 import React, {createRef, useEffect, useState} from "react";
 import workWithServer from "../core/workWithServer";
-import Button from "./Button";
+import Button, {InputForDatePicker} from "./Button";
 import DataTable from "react-data-table-component";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -37,6 +37,14 @@ function MakeReport({setShowBody}) {
   }, []);
 
   const columns = [
+    {
+      name: '№',
+      selector: 'id',
+      sortable: true,
+      cell: (row, index) => {
+        return <div>{index + 1}</div>;
+      },
+    },
     {
       name: 'Воинское звание',
       selector: 'rank_id__name',
@@ -123,7 +131,8 @@ function MakeReport({setShowBody}) {
           className="rounded border border-blue-700 p-1"
           selected={startDate}
           onChange={date => setStartDate(date)}
-          dateFormat="dd-MM-yyyy"
+          dateFormat="dd.MM.yyyy"
+          customInput={<InputForDatePicker/>}
         />
       </div>
       <DataTable
@@ -132,7 +141,13 @@ function MakeReport({setShowBody}) {
         data={listOfPerson}
         pagination={true}
         contextMessage={{singular: 'строка', plural: 'строк', message: 'выбрано'}}
-        // actions={actions}
+        paginationComponentOptions = {{
+          rowsPerPageText: 'Строк на странице:',
+          rangeSeparatorText: 'из',
+          noRowsPerPage: false,
+          selectAllRowsItem: false,
+          selectAllRowsItemText: 'Все'
+        }}
       />
     </div>
   )

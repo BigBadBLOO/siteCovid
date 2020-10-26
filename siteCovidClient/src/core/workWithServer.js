@@ -1,3 +1,5 @@
+import {trackPromise} from "react-promise-tracker";
+
 const workWithServer = () => {
   return {
     initUser: () => {
@@ -47,7 +49,7 @@ function status(response) {
 }
 
 async function request(url, body) {
-  return await fetch(url, body).then(status);
+  return await trackPromise(fetch(url, body).then(status));
 }
 
 async function requestPost(url, data) {
