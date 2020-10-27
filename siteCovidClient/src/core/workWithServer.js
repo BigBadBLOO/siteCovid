@@ -11,6 +11,9 @@ const workWithServer = () => {
     logOut: () => {
       return requestPost('/logout/',)
     },
+    changePassword: (data) => {
+      return requestPost('/changePassword/', data)
+    },
     getListOfCity: () => {
       return requestPost('/getListOfCity/',)
     },

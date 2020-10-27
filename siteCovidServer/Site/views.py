@@ -123,6 +123,15 @@ def getListOfStatus(request):
     return HttpResponse(json.dumps(status))
 
 
+def changePassword(request):
+    user = request.user
+    data = json.loads(request.body)
+    password = data['password']
+    user.set_password(password)
+    user.save()
+    return HttpResponse(json.dumps({}))
+
+
 # TODO не сохранять всех пользователей с подразделений а только тех кто имеет статус
 def setListOfReport(request):
     user = request.user
