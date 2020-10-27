@@ -114,7 +114,7 @@ def setListOfPerson(request):
                 is_military=elem['is_military']
             )
         list_id.append(person.pk)
-    UserForControl.objects.exclude(pk__in=list_id).delete()
+    UserForControl.objects.filter(group_id=user.profile.group.id).exclude(pk__in=list_id).delete()
     return HttpResponse(json.dumps({'status': 'ok'}))
 
 
