@@ -4,9 +4,25 @@ from django.contrib.auth.models import User
 
 class UserGroup(models.Model):
     name = models.TextField(max_length=500, blank=True)
+    parent = models.ForeignKey("self",  models.SET_NULL, blank=True, null=True, verbose_name="Подразделение пользователя")
 
     def __str__(self):
-        return self.name
+        return (self.parent.name + ' ' if self.parent is not None else '') + self.name
+
+    def get_main_parent(self):
+      parent = self
+      if parent.parent is None:
+        return parent
+      for par in UserGroup.objects.filter(pk=self.parent.pk):
+          parent = par
+      return parent
+
+    def get_children(self):
+      children = list()
+      children.append(self.pk)
+      for child in UserGroup.objects.filter(parent=self.pk):
+        children.extend(child.get_children())
+      return children
 
     class Meta:
         verbose_name = 'Подразделение пользователей'
