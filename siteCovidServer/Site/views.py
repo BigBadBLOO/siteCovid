@@ -89,7 +89,12 @@ def getListOfPerson(request):
         'id': p.id,
         'name': p.name,
         'group_id': group.id,
-        'group_id__name': group.name
+        'group_id__name': group.name,
+        'rank_id': p.rank_id,
+        'rank_id__name': p.rank.name if  p.rank is not None else '',
+        'is_military': p.is_military,
+        'is_woman_with_children': p.is_woman_with_children,
+        'city_id': p.city_id,
       })
       persons = persons_mass
   else:
