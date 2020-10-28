@@ -82,12 +82,16 @@ def getListOfPerson(request):
   persons = UserForControl.objects.all().order_by('group_id')
 
   if user.profile.is_control:
-    persons = [{
-      'id': p.id,
-      'name': p.name,
-      'group_id': p.group.get_main_parent().id,
-      'group_id__name': p.group.get_main_parent().name
-    } for p in persons]
+    persons_mass = []
+    for p in persons:
+      group = p.group.get_main_parent()
+      persons_mass.append({
+        'id': p.id,
+        'name': p.name,
+        'group_id': group.id,
+        'group_id__name': group.name
+      })
+      persons = persons_mass
   else:
     groups = user.profile.group.get_children()
     persons = persons.filter(group_id__in=groups)
