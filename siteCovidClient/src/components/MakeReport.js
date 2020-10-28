@@ -148,6 +148,8 @@ function MakeReport({setShowBody}) {
           selectAllRowsItem: false,
           selectAllRowsItemText: 'Все'
         }}
+        paginationPerPage={100}
+        paginationRowsPerPageOptions={[25,50,100]}
       />
     </div>
   )

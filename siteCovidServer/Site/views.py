@@ -79,7 +79,7 @@ def getListOfGroup(request):
 
 def getListOfPerson(request):
   user = request.user
-  persons = UserForControl.objects.all().order_by('group_id').order_by('-rank')
+  persons = UserForControl.objects.all().order_by('group_id').order_by('name')
 
   if user.profile.is_control:
     persons_mass = []

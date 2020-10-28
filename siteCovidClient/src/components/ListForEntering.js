@@ -35,7 +35,7 @@ function ListForEntering({headerRef, setShowBody}) {
     getListOfReport();
   }, [startDate]);
 
-  const onWorkAll = listOfPerson.filter(el => !el.status_id);
+  const onWorkAll = listOfPerson.filter(el => !el.status_id || el.status_id__name === 'Наряд');
 
   return (
     <>
