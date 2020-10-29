@@ -160,16 +160,16 @@ def setListOfReport(request):
   for person in persons:
     obj = DayData.objects.filter(date=date).filter(userForControl_id=person['id']).first()
     comment = person['comment'] if 'comment' in person else ''
-    status_id = person['status_id'] if 'status_id' in person else None
+    status = Status.objects.filter(pk=person['status_id']).first() if 'status_id' in person else None
     if obj is not None:
-      obj.status_id = status_id
+      obj.status = status
       obj.comment = comment
       obj.save()
     else:
       obj = DayData.objects.create(
         date=date,
         comment=comment,
-        status_id=status_id,
+        status=status,
         userForControl_id=person['id']
       )
     list_id.append(obj.pk)
