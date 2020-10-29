@@ -81,29 +81,24 @@ def getListOfPerson(request):
   user = request.user
   persons = UserForControl.objects.all().order_by('group_id').order_by('name')
 
-  if user.profile.is_control:
-    persons_mass = []
-    for p in persons:
-      group = p.group.get_main_parent()
-      persons_mass.append({
-        'id': p.id,
-        'name': p.name,
-        'group_id': group.id,
-        'group_id__name': group.name,
-        'rank_id': p.rank_id,
-        'rank_id__name': p.rank.name if  p.rank is not None else '',
-        'is_military': p.is_military,
-        'is_woman_with_children': p.is_woman_with_children,
-        'city_id': p.city_id,
-      })
-      persons = persons_mass
-  else:
+  if not user.profile.is_control:
     groups = user.profile.group.get_children()
     persons = persons.filter(group_id__in=groups)
-    persons = list(persons.values(
-      'id', 'group_id', 'group_id__name', 'name', 'rank_id', 'rank_id__name', 'is_military', 'is_woman_with_children',
-      'city_id'
-    ))
+  persons_mass = []
+  for p in persons:
+    group = p.group.get_main_parent()
+    persons_mass.append({
+      'id': p.id,
+      'name': p.name,
+      'group_id': group.id,
+      'group_id__name': group.name,
+      'rank_id': p.rank_id,
+      'rank_id__name': p.rank.name if p.rank is not None else '',
+      'is_military': p.is_military,
+      'is_woman_with_children': p.is_woman_with_children,
+      'city_id': p.city_id,
+    })
+    persons = persons_mass
   return HttpResponse(json.dumps(persons))
 
 

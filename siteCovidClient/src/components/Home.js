@@ -21,9 +21,13 @@ function Home({user}) {
       <Button className="" type='primary' text="Сформировать отчет" onClick={() => {
         setShowBody('makeReport')
       }}/>
+      <Button className="" type='primary' text="Списки на проход" onClick={() => {
+        setShowBody('listForEntering')
+      }}/>
       <Button className="" type='primary' text="Справка доклад" onClick={() => {
         setShowBody('report')
       }}/>
+
     </div>
   );
 
@@ -33,6 +37,8 @@ function Home({user}) {
         return (<ListOfPerson setShowBody={setShowBody}/>);
       case 'makeReport':
         return (<MakeReport setShowBody={setShowBody}/>);
+      case 'listForEntering':
+        return (<ListForEntering headerRef={headerRef} setShowBody={setShowBody}/>);
       case 'report':
         return (<SeeReport headerRef={headerRef} setShowBody={setShowBody}/>);
       default:
