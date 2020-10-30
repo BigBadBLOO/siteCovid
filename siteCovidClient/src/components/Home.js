@@ -7,31 +7,14 @@ import MakeReport from "./MakeReport";
 import SeeReport from "./SeeReport";
 import ListForEntering from "./ListForEntering";
 import Loader from "./Loader";
+import MainPageForCenter from "./MainPageForCenter";
 
 
 function Home({user}) {
   const [showBody, setShowBody] = useState('nothing');
   const headerRef = createRef();
 
-  const mainButton = (
-    <div>
-      <Button className="" type='primary' text="Управление л/с" onClick={() => {
-        setShowBody('listOfPerson')
-      }}/>
-      <Button className="" type='primary' text="Сформировать отчет" onClick={() => {
-        setShowBody('makeReport')
-      }}/>
-      <div className="float-right">
-        <Button className="" type='warning' text="Списки на проход" onClick={() => {
-          setShowBody('listForEntering')
-        }}/>
-        <Button className="" type='warning' text="Справка доклад" onClick={() => {
-          setShowBody('report')
-        }}/>
-      </div>
-
-    </div>
-  );
+  const mainButton = <MainPageForCenter setShowBody={setShowBody}/>;
 
   const bodyForCentre = () => {
     switch (showBody) {

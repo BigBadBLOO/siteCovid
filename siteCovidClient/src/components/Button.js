@@ -42,7 +42,7 @@ export default function Button({icon, type, text, onClick, className, disabled, 
 const InputForDatePicker = (props) => {
   return (
     <input
-      className="rounded border border-blue-700 p-1"
+      className="rounded border border-blue-700 p-1 mr-2"
       onClick={props.onClick}
       value={props.value}
       type="text"

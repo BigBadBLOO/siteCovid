@@ -1,0 +1,17 @@
+.myModalAnimation-enter {
+  opacity: 0;
+}
+.myModalAnimation-enter-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+.myModalAnimation-exit {
+  opacity: 1;
+}
+.myModalAnimation-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+
+

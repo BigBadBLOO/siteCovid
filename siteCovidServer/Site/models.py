@@ -101,6 +101,9 @@ class DayData(models.Model):
     def __str__(self):
         return self.userForControl.name + str(self.date)
 
+    def get_date_day(self):
+      return self.date.strftime("%d")
+
     class Meta:
         verbose_name = 'л/с по дням'
         verbose_name_plural = 'л/с по дням'

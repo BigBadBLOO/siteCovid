@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate
@@ -149,42 +151,76 @@ def changePassword(request):
   return HttpResponse(json.dumps({}))
 
 
-# TODO не сохранять всех пользователей с подразделений а только тех кто имеет статус
 def setListOfReport(request):
   user = request.user
   data = json.loads(request.body)
   persons = data['data']
-  date = data['date']
-  date = date.split('T')[0]
-  list_id = []
-  for person in persons:
-    obj = DayData.objects.filter(date=date).filter(userForControl_id=person['id']).first()
-    comment = person['comment'] if 'comment' in person else ''
-    status = Status.objects.filter(pk=person['status_id']).first() if 'status_id' in person else None
-    if obj is not None:
-      obj.status = status
-      obj.comment = comment
-      obj.save()
-    else:
-      obj = DayData.objects.create(
-        date=date,
-        comment=comment,
-        status=status,
-        userForControl_id=person['id']
-      )
-    list_id.append(obj.pk)
-  groups = user.profile.group.get_children()
-  DayData.objects.filter(date=date).filter(userForControl_id__group_id__in=groups).exclude(pk__in=list_id).delete()
+  date = data['date'].split('T')[0] if 'date' in data else None
+  date_begin = data['date_begin'].split('T')[0] if 'date_begin' in data else None
+  date_end = data['date_end'].split('T')[0] if 'date_end' in data else None
+  if date is not None:
+    list_id = []
+    for person in persons:
+      obj = DayData.objects.filter(date=date).filter(userForControl_id=person['id']).first()
+      comment = person['comment'] if 'comment' in person else ''
+      status = Status.objects.filter(pk=person['status_id']).first() if 'status_id' in person else None
+      if obj is not None:
+        obj.status = status
+        obj.comment = comment
+        obj.save()
+      else:
+        obj = DayData.objects.create(
+          date=date,
+          comment=comment,
+          status=status,
+          userForControl_id=person['id']
+        )
+      list_id.append(obj.pk)
+    groups = user.profile.group.get_children()
+    DayData.objects.filter(date=date).filter(userForControl_id__group_id__in=groups).exclude(pk__in=list_id).delete()
+  if date_begin is not None and date_end is not None:
+    for p in persons:
+      date_list = date_end.split('-')
+      date = datetime.datetime.date(datetime.datetime(int(date_list[0]), int(date_list[1]), int(p['date'])))
+      person = DayData.objects.filter(userForControl_id=p['userForControl_id']).filter(date=date).first()
+      if person is not None:
+        person.status = Status.objects.filter(pk=p['status_id']).first()
+        person.comment = p['comment']
+        person.save()
+      else:
+        person = DayData.objects.create(
+          status=Status.objects.filter(pk=p['status_id']).first(),
+          comment=p['comment'],
+          date=date,
+          userForControl=UserForControl.objects.filter(pk=p['userForControl_id']).first()
+        )
   return HttpResponse(json.dumps({'ok': True}))
 
 
 def getListOfReport(request):
   user = request.user
   data = json.loads(request.body)
-  date = data['date'].split('T')[0]
-  obj = DayData.objects.filter(date=date)
+  date = data['date'].split('T')[0] if 'date' in data else None
+  date_begin = data['date_begin'].split('T')[0] if 'date_begin' in data else None
+  date_end = data['date_end'].split('T')[0] if 'date_end' in data else None
+  obj = DayData.objects.all()
+
+  if date is not None:
+    obj = obj.filter(date=date)
+  if date_begin is not None and date_end is not None:
+    obj = obj.filter(date__range=[date_begin, date_end])
+
   if not user.profile.is_control:
     groups = user.profile.group.get_children()
     obj = obj.filter(userForControl_id__group_id__in=groups)
-  obj = list(obj.values('comment', 'status_id', 'status_id__name', 'userForControl_id'))
-  return HttpResponse(json.dumps(obj))
+  resp = []
+  for o in obj:
+    resp.append({
+      'comment': o.comment,
+      'status_id': o.status_id,
+      'status_id__name': o.status.name if o.status is not None else '',
+      'userForControl_id': o.userForControl_id,
+      'date': o.get_date_day()
+    })
+  # obj = list(obj.values('comment', 'status_id', 'status_id__name', 'userForControl_id', 'get_date()'))
+  return HttpResponse(json.dumps(resp))
