@@ -125,7 +125,7 @@ export default function MainPageForCenter({setShowBody}) {
           <span className="my-auto">{personModal.name} ({objectModal.date} число)</span>
           <span className="ml-auto" onClick={() => setShow(false)}>x</span>
         </div>
-        <label>Выберите статус</label>
+        <label>Выберите статус:</label>
         <select className="my-4 w-full h-full border-b border-blue-700 bg-white" value={objectModal.status_id}
                 onChange={(e) => {
                   setObjectModal({...objectModal, status_id: Number(e.target.value)})
@@ -157,6 +157,7 @@ export default function MainPageForCenter({setShowBody}) {
           });
           setShow(false);
         }}/>
+
       </MyModal>
     </div>
   )
