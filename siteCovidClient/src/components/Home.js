@@ -21,12 +21,14 @@ function Home({user}) {
       <Button className="" type='primary' text="Сформировать отчет" onClick={() => {
         setShowBody('makeReport')
       }}/>
-      <Button className="" type='primary' text="Списки на проход" onClick={() => {
-        setShowBody('listForEntering')
-      }}/>
-      <Button className="" type='primary' text="Справка доклад" onClick={() => {
-        setShowBody('report')
-      }}/>
+      <div className="float-right">
+        <Button className="" type='warning' text="Списки на проход" onClick={() => {
+          setShowBody('listForEntering')
+        }}/>
+        <Button className="" type='warning' text="Справка доклад" onClick={() => {
+          setShowBody('report')
+        }}/>
+      </div>
 
     </div>
   );

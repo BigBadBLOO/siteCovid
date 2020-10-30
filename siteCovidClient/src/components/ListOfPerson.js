@@ -9,6 +9,9 @@ export default function ListOfPerson({setShowBody}) {
   const [listWithCity, setListWithCity] = useState([]);
   const [listWithRank, setListWithRank] = useState([]);
   const [listOfPerson, setListOfPerson] = useState([]);
+
+  const [searchByName, setSearchByName] = useState('');
+
   let selectedRows = [];
 
   let refIs_military = createRef();
@@ -26,12 +29,14 @@ export default function ListOfPerson({setShowBody}) {
   useEffect(() => {
     listOfPerson.filter(el => el.is_editable).map(el => {
       refIs_military.current.value = el.is_military.toString();
-      refRank_id.current.value =Number(el.rank_id);
+      refRank_id.current.value = Number(el.rank_id);
       refName.current.value = el.name;
       refCity_id.current.value = Number(el.city_id);
       refIs_woman_with_children.current.value = el.is_woman_with_children.toString()
     })
   }, [listOfPerson]);
+
+  const filterListOfPeople = listOfPerson.filter(el => el.name.indexOf(searchByName) > -1);
 
   const columns = [
     {
@@ -137,27 +142,31 @@ export default function ListOfPerson({setShowBody}) {
     selectedRows = state.selectedRows
   };
 
-  const actions =
-    <Button className="text-base" type="primary" text="Добавить" onClick={() => {
-      setListOfPerson([{
-        id: idNewRow,
-        is_military: true,
-        name: '',
-        is_woman_with_children: false,
-        is_editable: true
-      }, ...listOfPerson.map((el => {
-        el.is_editable = false;
-        return el
-      }))]);
-      setIdNewRow(prevState => prevState - 1)
-    }}/>;
+  const actions = (
+    <>
+      <input className="bg-white rounded border border-blue-600 outline-none text-base p-1" placeholder="поиск по имени..." value={searchByName}
+             onChange={e => setSearchByName(e.target.value)}/>
+      <Button className="text-base" type="primary" text="Добавить" onClick={() => {
+        setListOfPerson([{
+          id: idNewRow,
+          is_military: true,
+          name: '',
+          is_woman_with_children: false,
+          is_editable: true
+        }, ...listOfPerson.map((el => {
+          el.is_editable = false;
+          return el
+        }))]);
+        setIdNewRow(prevState => prevState - 1)
+      }}/>
+    </>);
 
-  const contextActions =
-    <Button className="text-base" type="danger" text="Удалить" onClick={() => {
-      const idOfRows = selectedRows.map((el) => el.id);
-      setListOfPerson(listOfPerson.filter((el) => idOfRows.indexOf(el.id) === -1));
-      setToggleCleared(!toggleCleared)
-    }}/>;
+  const contextActions = <Button className="text-base" type="danger" text="Удалить" onClick={() => {
+    const idOfRows = selectedRows.map((el) => el.id);
+    setListOfPerson(listOfPerson.filter((el) => idOfRows.indexOf(el.id) === -1));
+    setToggleCleared(!toggleCleared)
+  }}/>;
+
 
   return (
     <div>
@@ -173,14 +182,14 @@ export default function ListOfPerson({setShowBody}) {
         title="Управление личным составом центра"
         columns={columns}
         selectableRows
-        data={listOfPerson}
+        data={filterListOfPeople}
         pagination={true}
         onSelectedRowsChange={selectedRow}
         contextMessage={{singular: 'строка', plural: 'строк', message: ''}}
         contextActions={contextActions}
         actions={actions}
         clearSelectedRows={toggleCleared}
-        paginationComponentOptions = {{
+        paginationComponentOptions={{
           rowsPerPageText: 'Строк на странице:',
           rangeSeparatorText: 'из',
           noRowsPerPage: false,
@@ -188,7 +197,7 @@ export default function ListOfPerson({setShowBody}) {
           selectAllRowsItemText: 'Все'
         }}
         paginationPerPage={100}
-        paginationRowsPerPageOptions={[25,50,100]}
+        paginationRowsPerPageOptions={[25, 50, 100]}
       />
     </div>
   )

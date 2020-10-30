@@ -14,6 +14,10 @@ function MakeReport({setShowBody}) {
   const [listStatus, setListStatus] = useState([]);
   const [listOfPerson, setListOfPerson] = useState([]);
 
+  const [searchByName, setSearchByName] = useState('');
+
+  const filterListOfPeople = listOfPerson.filter(el => el.name.indexOf(searchByName) > -1);
+
   const dataByday = () => {
     workWithServer.getListOfReport({'date': startDate}).then(data => {
       setListOfPerson(prevState => {
@@ -108,7 +112,11 @@ function MakeReport({setShowBody}) {
     },
   ];
 
-
+  const actions = (
+    <>
+      <input  className="bg-white rounded border border-blue-600 outline-none text-base p-1" placeholder="поиск по имени..." value={searchByName}
+              onChange={e => setSearchByName(e.target.value)}/>
+    </>);
   return (
     <div>
       <div>
@@ -138,7 +146,7 @@ function MakeReport({setShowBody}) {
       <DataTable
         title={"Сформировать отчет на " + startDate.toLocaleString("ru")}
         columns={columns}
-        data={listOfPerson}
+        data={filterListOfPeople}
         pagination={true}
         contextMessage={{singular: 'строка', plural: 'строк', message: 'выбрано'}}
         paginationComponentOptions = {{
@@ -148,6 +156,7 @@ function MakeReport({setShowBody}) {
           selectAllRowsItem: false,
           selectAllRowsItemText: 'Все'
         }}
+        actions={actions}
         paginationPerPage={100}
         paginationRowsPerPageOptions={[25,50,100]}
       />

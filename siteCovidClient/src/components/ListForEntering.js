@@ -4,7 +4,11 @@ import DatePicker from "react-datepicker";
 import workWithServer from "../core/workWithServer";
 
 function ListForEntering({headerRef, setShowBody}) {
-  const [startDate, setStartDate] = useState(new Date());
+  const dateToday = new Date();
+  dateToday.setDate(dateToday.getDate() + 1);
+  const tomorrow = new Date(dateToday);
+  const [startDate, setStartDate] = useState(tomorrow);
+  console.log(startDate);
   const printRef = createRef();
 
   const [listOfPerson, setListOfPerson] = useState([]);
