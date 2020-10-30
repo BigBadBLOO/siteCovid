@@ -3,11 +3,12 @@ import Button from "./Button";
 import workWithServer from "../core/workWithServer";
 import Moment from "react-moment";
 import MyModal from "./Modal";
+import clsx from "clsx";
 
 export default function MainPageForCenter({setShowBody}) {
   const curr = new Date();
-  const firstDay = new Date(curr.getFullYear(), curr.getMonth(), 1);
-  const lastDay = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
+  const firstDay = new Date(curr.getFullYear(), curr.getMonth(), 1, 5);
+  const lastDay = new Date(curr.getFullYear(), curr.getMonth() + 1, 0, 5);
 
   const [startDate, setStartDate] = useState(firstDay);
   const [endDate, setEndDate] = useState(lastDay);
@@ -32,7 +33,7 @@ export default function MainPageForCenter({setShowBody}) {
     });
     setShow(true);
   };
-
+  console.log(listOfReport);
   useEffect(() => {
     workWithServer.getListOfPerson().then(setListOfPerson);
     workWithServer.getListOfStatus().then(setListStatus);
@@ -62,8 +63,8 @@ export default function MainPageForCenter({setShowBody}) {
         <select className="rounded border border-blue-700 p-1 bg-white" value={month} onChange={e => {
           const curr = new Date();
           curr.setMonth(e.target.value);
-          setStartDate(new Date(curr.getFullYear(), curr.getMonth(), 1));
-          setEndDate(new Date(curr.getFullYear(), curr.getMonth() + 1, 0));
+          setStartDate(new Date(curr.getFullYear(), curr.getMonth(), 1, 5));
+          setEndDate(new Date(curr.getFullYear(), curr.getMonth() + 1, 0, 5));
           setMonth(e.target.value)
         }
         }>
@@ -80,13 +81,6 @@ export default function MainPageForCenter({setShowBody}) {
           <option value={10}>Ноябрь</option>
           <option value={11}>декабрь</option>
         </select>
-        <Button className="" type='warning' text="Сохранить" onClick={() => {
-            workWithServer.setListOfReport({
-              'data': listOfReport,
-              'date_begin': startDate,
-              'date_end': endDate
-            })
-          }}/>
         <div className="float-right">
           <Button className="" type='warning' text="Списки на проход" onClick={() => {
             setShowBody('listForEntering')
@@ -99,18 +93,27 @@ export default function MainPageForCenter({setShowBody}) {
       <div>
         <div className="m-2 overflow-x-auto">
           <div className="flex">
-            <p className="w-56 p-1 border" style={{minWidth: 100}}>ФИО</p>
-            {massWithDate.map(el => <p className="p-1 border w-12 inline-block">
+            <p className="w-12 p-1 border">№</p>
+            <p className="w-40 p-1 border">Звание</p>
+            <p className="w-56 p-1 border">ФИО</p>
+            {massWithDate.map(el => <p className={clsx("p-1 border w-12 inline-block", {
+              'bg-blue-200 bg-opacity-25': el.getDay() === 0 || el.getDay() === 6,
+              'bg-red-200 bg-opacity-25': el.getDate() === curr.getDate(),
+            })}>
               <Moment format="DD">{el}</Moment></p>)}
           </div>
-          {listOfPerson.map(el => {
+          {listOfPerson.map((el, index) => {
             const listReportByPerson = listOfReport.filter(obj => obj.userForControl_id === el.id);
             return <div className="flex">
-              <p className="w-56  p-1 border cursor-pointer">{el.rank_id__name + ' ' + el.name}</p>
+              <p className="w-12 p-1 border">{index + 1}</p>
+              <p className="w-40 p-1 border">{el.rank_id__name}</p>
+              <p className="w-56  p-1 border cursor-pointer">{el.name}</p>
               {massWithDate.map(date => {
                 const filter = listReportByPerson.filter(obj => Number(obj.date) === date.getDate() && !!obj.status_id);
-                return <p className="p-1 border w-12 text-center align-middle text-red-500 cursor-pointer"
-                          onClick={() => {
+                return <p className={clsx("p-1 border w-12 text-center align-middle text-red-500 cursor-pointer", {
+              'bg-blue-200 bg-opacity-25': date.getDay() === 0 || date.getDay() === 6,
+              'bg-red-200 bg-opacity-25': date.getDate() === curr.getDate(),
+            })}  onClick={() => {
                             modal(el, filter, date.getDate())
                           }}>
                   {filter.length > 0 ? '+' : ''}
@@ -122,26 +125,24 @@ export default function MainPageForCenter({setShowBody}) {
       </div>
       <MyModal show={show} showModal={setShow}>
         <div className="border-b m-1 mb-4 p-2 flex">
-          <span className="my-auto">{personModal.name} ({objectModal.date} число)</span>
+          <span className="my-auto">{personModal.name} ({objectModal.date}.{curr.getMonth() + 1}.{curr.getFullYear()})</span>
           <span className="ml-auto" onClick={() => setShow(false)}>x</span>
         </div>
         <label>Выберите статус:</label>
         <select className="my-4 w-full h-full border-b border-blue-700 bg-white" value={objectModal.status_id}
                 onChange={(e) => {
-                  setObjectModal({...objectModal, status_id: Number(e.target.value)})
+                  let comment = e.target.value ? objectModal.comment : '';
+                  setObjectModal({...objectModal, status_id: Number(e.target.value), comment: comment})
                 }}>
           <option key={-1} value="">Сбросить статус</option>
           {listStatus.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
         </select>
         <label>Комментарий</label>
-        <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
+        <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none" value={objectModal.comment}
                   placeholder="Оставьте комментарий..." onChange={(e) => {
           setObjectModal({...objectModal, comment: e.target.value})
-        }}>
-          {objectModal.comment}
-        </textarea>
+        }}/>
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
-          console.log(objectModal);
           setListOfReport(prev => {
             let add = false;
             const returnMass = [...prev.map(el => {
@@ -155,6 +156,12 @@ export default function MainPageForCenter({setShowBody}) {
             !add && returnMass.push(objectModal);
             return returnMass
           });
+          const month =curr.getMonth() + 1 >= 10 ? curr.getMonth() + 1 : '0' + curr.getMonth() + 1;
+          const day = Number(objectModal.date) >= 10 ? objectModal.date : '0' + objectModal.date;
+           workWithServer.setOneReport({
+              'data': objectModal,
+             'date': `${curr.getFullYear()}-${month}-${day}`
+            });
           setShow(false);
         }}/>
 

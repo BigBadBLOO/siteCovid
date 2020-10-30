@@ -29,6 +29,9 @@ const workWithServer = () => {
     setListOfReport: (data) => {
       return requestPost('/setListOfReport/', data)
     },
+    setOneReport: (data) => {
+      return requestPost('/setOneReport/', data)
+    },
     getListOfReport: (data) => {
       return requestPost('/getListOfReport/', data)
     },

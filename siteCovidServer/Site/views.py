@@ -85,7 +85,7 @@ def getListOfPerson(request):
 
   if not user.profile.is_control:
     groups = user.profile.group.get_children()
-    persons = persons.filter(group_id__in=groups)
+    persons = persons.filter(group_id__in=groups).order_by('-is_military')
   persons_mass = []
   for p in persons:
     group = p.group.get_main_parent()
@@ -185,15 +185,39 @@ def setListOfReport(request):
       person = DayData.objects.filter(userForControl_id=p['userForControl_id']).filter(date=date).first()
       if person is not None:
         person.status = Status.objects.filter(pk=p['status_id']).first()
-        person.comment = p['comment']
+        person.comment = p['comment'] if 'comment' in p else ''
         person.save()
       else:
         person = DayData.objects.create(
           status=Status.objects.filter(pk=p['status_id']).first(),
-          comment=p['comment'],
+          comment=p['comment'] if 'comment' in p else '',
           date=date,
           userForControl=UserForControl.objects.filter(pk=p['userForControl_id']).first()
         )
+  return HttpResponse(json.dumps({'ok': True}))
+
+
+
+def setOneReport(request):
+  user = request.user
+  data = json.loads(request.body)
+  report = data['data']
+  date = data['date'] if 'date' in data else None
+  if date is not None:
+    obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
+    comment = report['comment'] if 'comment' in report else ''
+    status = Status.objects.filter(pk=report['status_id']).first() if 'status_id' in report else None
+    if obj is not None:
+      obj.status = status
+      obj.comment = comment
+      obj.save()
+    else:
+      obj = DayData.objects.create(
+        date=date,
+        comment=comment,
+        status=status,
+        userForControl_id=report['userForControl_id']
+      )
   return HttpResponse(json.dumps({'ok': True}))
 
 

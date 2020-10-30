@@ -8,7 +8,7 @@ function ListForEntering({headerRef, setShowBody}) {
   dateToday.setDate(dateToday.getDate() + 1);
   const tomorrow = new Date(dateToday);
   const [startDate, setStartDate] = useState(tomorrow);
-  console.log(startDate);
+
   const printRef = createRef();
 
   const [listOfPerson, setListOfPerson] = useState([]);
@@ -65,8 +65,13 @@ function ListForEntering({headerRef, setShowBody}) {
       <p className="font-bold m-2 text-center text-2xl">Списки на проход на {startDate.toLocaleDateString('ru')}</p>
       {listOfGroup.map(group => {
         const byGroup = onWorkAll.filter(person => person.group_id === group.id);
-        const massOdd = byGroup.filter((_, index) => index % 2 === 1);
-        const massEven = byGroup.filter((_, index) => index % 2 === 0);
+        const chunk_size = Math.ceil(byGroup.length / 4);
+        const groups = byGroup.map(function (e, i) {
+          return i % chunk_size === 0 ? byGroup.slice(i, i + chunk_size) : null;
+        }).filter(e => e);
+        const [mass1, mass2, mass3, mass4] = groups;
+        console.log([mass1, mass2, mass3, mass4])
+        console.log(groups);
 
         return (
           <>
@@ -78,28 +83,45 @@ function ListForEntering({headerRef, setShowBody}) {
                   <div className="flex">
                     <p className="border p-1 inline-block w-1/12">№</p>
                     <p className="border p-1 inline-block w-2/12">Звание и ФИО</p>
-                    <p className="border p-1 inline-block w-3/12">Примечание (время прохода)</p>
                     <p className="border p-1 inline-block w-1/12">№</p>
                     <p className="border p-1 inline-block w-2/12">Звание и ФИО</p>
-                    <p className="border p-1 inline-block w-3/12">Примечание (время прохода)</p>
+                    <p className="border p-1 inline-block w-1/12">№</p>
+                    <p className="border p-1 inline-block w-2/12">Звание и ФИО</p>
+                    <p className="border p-1 inline-block w-1/12">№</p>
+                    <p className="border p-1 inline-block w-2/12">Звание и ФИО</p>
                   </div>
-                  {massEven.map((el, index) => {
-                    const oddElem = massOdd[index];
+                  {mass1.map((el, index) => {
+                    const mass2elem = mass2 ? mass2[index] : null;
+                    const mass3elem = mass3 ? mass3[index] : null;
+                    const mass4elem = mass4 ? mass4[index] : null;
                     return (
                       <div className="flex">
                         <p className="border p-1 inline-block w-1/12">{index + 1}</p>
                         <p
                           className="border p-1 inline-block w-2/12 text-left">{el.rank_id__name ? el.rank_id__name : 'гп'} {el.name}</p>
-                        <p className="border p-1 inline-block w-3/12 text-left"> {el.comment}</p>
                         {
-                          oddElem && (
-                            <>
-                              <p className="border p-1 inline-block w-1/12">{massEven.length + index + 1}</p>
-                              <p
-                                className="border p-1 inline-block w-2/12 text-left">{oddElem.rank_id__name ? oddElem.rank_id__name : 'гп'} {oddElem.name}</p>
-                              <p className="border p-1 inline-block w-3/12 text-left"> {oddElem.comment}</p>
-                            </>
-                          )
+                          mass2elem && <>
+                            <p className="border p-1 inline-block w-1/12">{chunk_size + index + 1}</p>
+                            <p className="border p-1 inline-block w-2/12 text-left">
+                              {mass2elem.rank_id__name ? mass2elem.rank_id__name : 'гп'} {mass2elem.name}
+                            </p>
+                          </>
+                        }
+                        {
+                          mass3elem && <>
+                            <p className="border p-1 inline-block w-1/12">{chunk_size * 2 + index + 1}</p>
+                            <p className="border p-1 inline-block w-2/12 text-left">
+                              {mass3elem.rank_id__name ? mass3elem.rank_id__name : 'гп'} {mass3elem.name}
+                            </p>
+                          </>
+                        }
+                        {
+                          mass4elem && <>
+                            <p className="border p-1 inline-block w-1/12">{chunk_size * 3 + index + 1}</p>
+                            <p className="border p-1 inline-block w-2/12 text-left">
+                              {mass4elem.rank_id__name ? mass4elem.rank_id__name : 'гп'} {mass4elem.name}
+                            </p>
+                          </>
                         }
                       </div>
                     )
