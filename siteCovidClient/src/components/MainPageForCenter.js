@@ -116,7 +116,7 @@ export default function MainPageForCenter({setShowBody}) {
             })}  onClick={() => {
                             modal(el, filter, date.getDate())
                           }}>
-                  {filter.length > 0 ? '+' : ''}
+                  {filter.length > 0 ? filter[0]['status_id__abbr']  ? filter[0]['status_id__abbr'] : '+' : ''}
                 </p>
               })}
             </div>

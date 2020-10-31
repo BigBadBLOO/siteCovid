@@ -243,6 +243,7 @@ def getListOfReport(request):
       'comment': o.comment,
       'status_id': o.status_id,
       'status_id__name': o.status.name if o.status is not None else '',
+      'status_id__abbr': o.status.abbr if o.status is not None else '',
       'userForControl_id': o.userForControl_id,
       'date': o.get_date_day()
     })
