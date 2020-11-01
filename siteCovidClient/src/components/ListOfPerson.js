@@ -6,15 +6,20 @@ import workWithServer from "../core/workWithServer";
 export default function ListOfPerson({setShowBody}) {
   const [toggleCleared, setToggleCleared] = useState(false);
   const [idNewRow, setIdNewRow] = useState(-1);
+
   const [listWithCity, setListWithCity] = useState([]);
   const [listWithRank, setListWithRank] = useState([]);
   const [listOfPerson, setListOfPerson] = useState([]);
+  const [listOfGroup, setListOfGroup] = useState([]);
+  const [listOfPost, setListOfPost] = useState([]);
 
   const [searchByName, setSearchByName] = useState('');
 
   let selectedRows = [];
 
   let refIs_military = createRef();
+  let refGroup_id = createRef();
+  let refPost_id = createRef();
   let refRank_id = createRef();
   let refName = createRef();
   let refCity_id = createRef();
@@ -24,11 +29,14 @@ export default function ListOfPerson({setShowBody}) {
     workWithServer.getListOfCity().then(setListWithCity);
     workWithServer.getListOfPerson().then(setListOfPerson);
     workWithServer.getListOfRank().then(setListWithRank);
+    workWithServer.getListOfGroup().then(setListOfGroup);
+    workWithServer.getListOfPost().then(setListOfPost);
   }, []);
 
   useEffect(() => {
     listOfPerson.filter(el => el.is_editable).map(el => {
       refIs_military.current.value = el.is_military.toString();
+      refGroup_id.current.value = Number(el.group_id);
       refRank_id.current.value = Number(el.rank_id);
       refName.current.value = el.name;
       refCity_id.current.value = Number(el.city_id);
@@ -45,6 +53,30 @@ export default function ListOfPerson({setShowBody}) {
       sortable: true,
       cell: (row, index) => {
         return <div>{index + 1}</div>;
+      },
+    },
+    {
+      name: 'Подразделение',
+      selector: 'group_id',
+      sortable: true,
+      cell: row => {
+        return row.is_editable
+          ? <select ref={refGroup_id} className="w-full h-full border-b border-blue-700 bg-white">
+            {listOfGroup.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+          </select>
+          : <div>{(listOfGroup.filter(el => el.id === Number(row.group_id))).map(el => el.name)}</div>;
+      },
+    },
+    {
+      name: 'Должность',
+      selector: 'post_id',
+      sortable: true,
+      cell: row => {
+        return row.is_editable
+          ? <select ref={refPost_id} className="w-full h-full border-b border-blue-700 bg-white">
+            {listOfPost.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+          </select>
+          : <div>{(listOfPost.filter(el => el.id === Number(row.post_id))).map(el => el.name)}</div>;
       },
     },
     {
@@ -122,6 +154,8 @@ export default function ListOfPerson({setShowBody}) {
                 el.is_military = refIs_military.current.value === 'true';
                 el.rank_id = refRank_id.current.value;
                 el.name = refName.current.value;
+                el.group_id = refGroup_id.current.value;
+                el.post_id = refPost_id.current.value;
                 el.city_id = refCity_id.current.value;
                 el.is_woman_with_children = refIs_woman_with_children.current.value === 'true'
               }
@@ -144,13 +178,16 @@ export default function ListOfPerson({setShowBody}) {
 
   const actions = (
     <>
-      <input className="bg-white rounded border border-blue-600 outline-none text-base p-1" placeholder="поиск по имени..." value={searchByName}
+      <input className="bg-white rounded border border-blue-600 outline-none text-base p-1"
+             placeholder="поиск по имени..." value={searchByName}
              onChange={e => setSearchByName(e.target.value)}/>
       <Button className="text-base" type="primary" text="Добавить" onClick={() => {
         setListOfPerson([{
           id: idNewRow,
           is_military: true,
           name: '',
+          group_id: '',
+          post_id: '',
           is_woman_with_children: false,
           is_editable: true
         }, ...listOfPerson.map((el => {

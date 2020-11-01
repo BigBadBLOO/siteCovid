@@ -6,6 +6,7 @@ import workWithServer from "../core/workWithServer";
 function ListForEntering({headerRef, setShowBody}) {
   const dateToday = new Date();
   dateToday.setDate(dateToday.getDate() + 1);
+
   const tomorrow = new Date(dateToday);
   const [startDate, setStartDate] = useState(tomorrow);
 

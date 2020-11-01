@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import Button from "./Button";
+import Button, {InputForDatePicker} from "./Button";
 import workWithServer from "../core/workWithServer";
 import Moment from "react-moment";
 import MyModal from "./Modal";
 import clsx from "clsx";
+import DatePicker from "react-datepicker";
 
 export default function MainPageForCenter({setShowBody}) {
   const curr = new Date();
@@ -12,6 +13,8 @@ export default function MainPageForCenter({setShowBody}) {
 
   const [startDate, setStartDate] = useState(firstDay);
   const [endDate, setEndDate] = useState(lastDay);
+
+  const [endDateForModal, setEndDateForModal] = useState(null);
 
   const [month, setMonth] = useState(curr.getMonth());
 
@@ -33,7 +36,7 @@ export default function MainPageForCenter({setShowBody}) {
     });
     setShow(true);
   };
-  console.log(listOfReport);
+
   useEffect(() => {
     workWithServer.getListOfPerson().then(setListOfPerson);
     workWithServer.getListOfStatus().then(setListStatus);
@@ -54,6 +57,9 @@ export default function MainPageForCenter({setShowBody}) {
   return (
     <div>
       <div>
+        <Button className="" type='primary' text="Управление должностями" onClick={() => {
+          setShowBody('listOfPost')
+        }}/>
         <Button className="" type='primary' text="Управление л/с" onClick={() => {
           setShowBody('listOfPerson')
         }}/>
@@ -111,12 +117,12 @@ export default function MainPageForCenter({setShowBody}) {
               {massWithDate.map(date => {
                 const filter = listReportByPerson.filter(obj => Number(obj.date) === date.getDate() && !!obj.status_id);
                 return <p className={clsx("p-1 border w-12 text-center align-middle text-red-500 cursor-pointer", {
-              'bg-blue-200 bg-opacity-25': date.getDay() === 0 || date.getDay() === 6,
-              'bg-red-200 bg-opacity-25': date.getDate() === curr.getDate(),
-            })}  onClick={() => {
-                            modal(el, filter, date.getDate())
-                          }}>
-                  {filter.length > 0 ? filter[0]['status_id__abbr']  ? filter[0]['status_id__abbr'] : '+' : ''}
+                  'bg-blue-200 bg-opacity-25': date.getDay() === 0 || date.getDay() === 6,
+                  'bg-red-200 bg-opacity-25': date.getDate() === curr.getDate(),
+                })} onClick={() => {
+                  modal(el, filter, date.getDate())
+                }}>
+                  {filter.length > 0 ? filter[0]['status_id__abbr'] ? filter[0]['status_id__abbr'] : '+' : ''}
                 </p>
               })}
             </div>
@@ -125,9 +131,11 @@ export default function MainPageForCenter({setShowBody}) {
       </div>
       <MyModal show={show} showModal={setShow}>
         <div className="border-b m-1 mb-4 p-2 flex">
-          <span className="my-auto">{personModal.name} ({objectModal.date}.{curr.getMonth() + 1}.{curr.getFullYear()})</span>
+          <span
+            className="my-auto">{personModal.name} ({objectModal.date}.{curr.getMonth() + 1}.{curr.getFullYear()})</span>
           <span className="ml-auto" onClick={() => setShow(false)}>x</span>
         </div>
+
         <label>Выберите статус:</label>
         <select className="my-4 w-full h-full border-b border-blue-700 bg-white" value={objectModal.status_id}
                 onChange={(e) => {
@@ -138,31 +146,36 @@ export default function MainPageForCenter({setShowBody}) {
           {listStatus.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
         </select>
         <label>Комментарий</label>
-        <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none" value={objectModal.comment}
+        <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
+                  value={objectModal.comment}
                   placeholder="Оставьте комментарий..." onChange={(e) => {
           setObjectModal({...objectModal, comment: e.target.value})
         }}/>
+        <p className="">По какое число:</p>
+        <DatePicker
+          className="rounded border border-blue-700 p-1 w-full"
+          selected={endDateForModal}
+          onChange={date => setEndDateForModal(new Date(date.setHours(5)))}
+          dateFormat="dd.MM.yyyy"
+          customInput={<InputForDatePicker/>}
+          isClearable
+          placeholderText="По какое число..."
+          minDate={new Date(curr.getFullYear(), curr.getMonth(), objectModal.date)}
+        />
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
-          setListOfReport(prev => {
-            let add = false;
-            const returnMass = [...prev.map(el => {
-              if (el.userForControl_id === objectModal.userForControl_id && el.date === objectModal.date) {
-                el.status_id = objectModal.status_id;
-                el.comment = objectModal.comment;
-                add = true;
-              }
-              return el
-            })];
-            !add && returnMass.push(objectModal);
-            return returnMass
-          });
-          const month =curr.getMonth() + 1 >= 10 ? curr.getMonth() + 1 : '0' + curr.getMonth() + 1;
-          const day = Number(objectModal.date) >= 10 ? objectModal.date : '0' + objectModal.date;
-           workWithServer.setOneReport({
-              'data': objectModal,
-             'date': `${curr.getFullYear()}-${month}-${day}`
+          const month = curr.getMonth() + 1 >= 10 ? curr.getMonth() + 1 : '0' + curr.getMonth() + 1;
+          const day = objectModal.date.length >= 2 ? objectModal.date : '0' + objectModal.date;
+          workWithServer.setOneReport({
+            'data': objectModal,
+            'date': `${curr.getFullYear()}-${month}-${day}`,
+            'date_end': endDateForModal
+          }).then(() => {
+            workWithServer.getListOfReport({'date_begin': startDate, 'date_end': endDate}).then(data => {
+              setListOfReport(data)
             });
+          });
           setShow(false);
+          setEndDateForModal(null);
         }}/>
 
       </MyModal>

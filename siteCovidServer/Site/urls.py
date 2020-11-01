@@ -9,6 +9,9 @@ urlpatterns = [
   url(r'^changePassword/', changePassword, name='changePassword'),
 
   url(r'^getListOfCity/', getListOfCity, name='getListOfCity'),
+  url(r'^getListOfPost/', getListOfPost, name='getListOfPost'),
+  url(r'^setListOfPost/', setListOfPost, name='setListOfPost'),
+
   url(r'^getListOfPerson/', getListOfPerson, name='getListOfPerson'),
   url(r'^setListOfPerson/', setListOfPerson, name='setListOfPerson'),
 

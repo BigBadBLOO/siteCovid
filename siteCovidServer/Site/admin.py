@@ -8,6 +8,7 @@ class ProfileInline(admin.StackedInline):
     verbose_name_plural = 'Profile'
 
 admin.site.register(UserGroup)
+admin.site.register(UserPost)
 admin.site.register(City)
 admin.site.register(Profile)
 admin.site.register(UserForControl)

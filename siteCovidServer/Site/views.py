@@ -75,8 +75,49 @@ def getListOfRank(request):
 
 
 def getListOfGroup(request):
-  groups = list(UserGroup.objects.filter(parent=None).values())
-  return HttpResponse(json.dumps(groups))
+  user = request.user
+  groups = UserGroup.objects.all()
+  if user.profile.is_control:
+    groups = groups.filter(parent=None).order_by('position')
+  if not user.profile.is_control:
+    groups_user = user.profile.group.get_children()
+    groups = groups.filter(pk__in=groups_user).order_by('position')
+  return HttpResponse(json.dumps(list(groups.values())))
+
+
+def getListOfPost(request):
+  user = request.user
+  if not user.profile.is_control:
+    groups_user = user.profile.group.get_children()
+    posts = UserPost.objects.filter(group_id__in=groups_user).order_by('group__position', 'position')
+  return HttpResponse(json.dumps(list(posts.values())))
+
+
+
+def setListOfPost(request):
+  user = request.user
+  data = json.loads(request.body)
+  posts = data['data']
+  list_id = []
+  for elem in posts:
+    post = UserPost.objects.filter(pk=elem['id']).first()
+    group_id = elem['group_id'] if elem['group_id'] != 0 else user.group_id
+    if post is not None:
+      post.name = elem['name']
+      post.group_id = group_id
+      post.position = elem['position']
+      post.save()
+    else:
+      post = UserPost.objects.create(
+        name=elem['name'],
+        group_id=group_id,
+        position = elem['position'],
+      )
+    list_id.append(post.pk)
+
+  groups = user.profile.group.get_children()
+  UserPost.objects.filter(group_id__in=groups).exclude(pk__in=list_id).delete()
+  return HttpResponse(json.dumps({'status': 'ok'}))
 
 
 def getListOfPerson(request):
@@ -85,13 +126,14 @@ def getListOfPerson(request):
 
   if not user.profile.is_control:
     groups = user.profile.group.get_children()
-    persons = persons.filter(group_id__in=groups).order_by('-is_military')
+    persons = persons.filter(group_id__in=groups).order_by('group__position', 'post__position', 'name', '-is_military')
   persons_mass = []
   for p in persons:
-    group = p.group.get_main_parent()
+    group = p.group.get_main_parent() if user.profile.is_control else p.group
     persons_mass.append({
       'id': p.id,
       'name': p.name,
+      'post_id': p.post_id,
       'group_id': group.id,
       'group_id__name': group.name,
       'rank_id': p.rank_id,
@@ -100,7 +142,7 @@ def getListOfPerson(request):
       'is_woman_with_children': p.is_woman_with_children,
       'city_id': p.city_id,
     })
-    persons = persons_mass
+  persons = persons_mass
   return HttpResponse(json.dumps(persons))
 
 
@@ -114,10 +156,14 @@ def setListOfPerson(request):
     person = UserForControl.objects.filter(pk=elem['id']).first()
     rank_id = elem['rank_id'] if elem['rank_id'] != 0 else None
     city_id = elem['city_id'] if elem['city_id'] != 0 else None
+    group_id = elem['group_id'] if elem['group_id'] != 0 else user.group_id
+    post_id = elem['post_id'] if elem['post_id'] != 0 else None
     if person is not None:
       person.name = elem['name']
       person.rank_id = rank_id
       person.city_id = city_id
+      person.group_id = group_id
+      person.post_id = post_id
       person.is_woman_with_children = elem['is_woman_with_children']
       person.is_military = elem['is_military']
       person.save()
@@ -125,8 +171,9 @@ def setListOfPerson(request):
       person = UserForControl.objects.create(
         name=elem['name'],
         rank_id=rank_id,
-        group=user.profile.group,
+        group_id=group_id,
         city_id=city_id,
+        post_id=post_id,
         is_woman_with_children=elem['is_woman_with_children'],
         is_military=elem['is_military']
       )
@@ -188,7 +235,7 @@ def setListOfReport(request):
         person.comment = p['comment'] if 'comment' in p else ''
         person.save()
       else:
-        person = DayData.objects.create(
+        DayData.objects.create(
           status=Status.objects.filter(pk=p['status_id']).first(),
           comment=p['comment'] if 'comment' in p else '',
           date=date,
@@ -197,27 +244,48 @@ def setListOfReport(request):
   return HttpResponse(json.dumps({'ok': True}))
 
 
-
 def setOneReport(request):
-  user = request.user
   data = json.loads(request.body)
   report = data['data']
   date = data['date'] if 'date' in data else None
-  if date is not None:
+  date_end = data['date_end'].split('T')[0] if 'date_end' in data and data['date_end'] is not None else None
+
+  comment = report['comment'] if 'comment' in report else ''
+  status = Status.objects.filter(pk=report['status_id']).first() if 'status_id' in report else None
+
+  if date is not None and date_end is None:
     obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
-    comment = report['comment'] if 'comment' in report else ''
-    status = Status.objects.filter(pk=report['status_id']).first() if 'status_id' in report else None
     if obj is not None:
       obj.status = status
       obj.comment = comment
       obj.save()
     else:
-      obj = DayData.objects.create(
+      DayData.objects.create(
         date=date,
         comment=comment,
         status=status,
         userForControl_id=report['userForControl_id']
       )
+  if date is not None and date_end is not None:
+    date = date.split('-')
+    date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
+    date_end = date_end.split('-')
+    date_end = datetime.date(int(date_end[0]), int(date_end[1]), int(date_end[2]))
+
+    while date_end >= date:
+      obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
+      if obj is not None:
+        obj.status = status
+        obj.comment = comment
+        obj.save()
+      else:
+        DayData.objects.create(
+          date=date,
+          comment=comment,
+          status=status,
+          userForControl_id=report['userForControl_id']
+        )
+      date = date + datetime.timedelta(days=1)
   return HttpResponse(json.dumps({'ok': True}))
 
 
@@ -247,5 +315,4 @@ def getListOfReport(request):
       'userForControl_id': o.userForControl_id,
       'date': o.get_date_day()
     })
-  # obj = list(obj.values('comment', 'status_id', 'status_id__name', 'userForControl_id', 'get_date()'))
   return HttpResponse(json.dumps(resp))

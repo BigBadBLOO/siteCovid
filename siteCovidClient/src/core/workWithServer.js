@@ -41,6 +41,12 @@ const workWithServer = () => {
     getListOfGroup: (data) => {
       return requestPost('/getListOfGroup/', data)
     },
+    getListOfPost: () => {
+      return requestPost('/getListOfPost/')
+    },
+    setListOfPost: (data) => {
+      return requestPost('/setListOfPost/', data)
+    },
   }
 };
 

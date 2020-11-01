@@ -8,6 +8,7 @@ import SeeReport from "./SeeReport";
 import ListForEntering from "./ListForEntering";
 import Loader from "./Loader";
 import MainPageForCenter from "./MainPageForCenter";
+import ListOfPost from "./ListOfPost";
 
 
 function Home({user}) {
@@ -18,6 +19,8 @@ function Home({user}) {
 
   const bodyForCentre = () => {
     switch (showBody) {
+       case 'listOfPost':
+        return (<ListOfPost setShowBody={setShowBody}/>);
       case 'listOfPerson':
         return (<ListOfPerson setShowBody={setShowBody}/>);
       case 'makeReport':

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class UserGroup(models.Model):
     name = models.TextField(max_length=500, blank=True)
     parent = models.ForeignKey("self",  models.SET_NULL, blank=True, null=True, verbose_name="Подразделение пользователя")
+    position = models.FloatField(blank=True, verbose_name='Позиция', null=True)
 
     def __str__(self):
         return (self.parent.name + ' ' if self.parent is not None else '') + self.name
@@ -27,6 +28,19 @@ class UserGroup(models.Model):
     class Meta:
         verbose_name = 'Подразделение пользователей'
         verbose_name_plural = 'Подразделение пользователей'
+
+
+class UserPost(models.Model):
+  name = models.TextField(max_length=500, blank=True)
+  group = models.ForeignKey(UserGroup, models.SET_NULL, blank=True, null=True, verbose_name="Подразделение")
+  position = models.FloatField(blank=True, verbose_name='Позиция', null=True)
+
+  def __str__(self):
+    return self.name
+
+  class Meta:
+    verbose_name = 'Должность пользователей'
+    verbose_name_plural = 'Должность пользователей'
 
 
 class Profile(models.Model):
@@ -67,6 +81,7 @@ class City(models.Model):
 
 class UserForControl(models.Model):
     group = models.ForeignKey(UserGroup, on_delete=models.CASCADE, verbose_name="Подразделение пользователя")
+    post = models.ForeignKey(UserPost,  models.SET_NULL, blank=True, null=True, verbose_name="Должность пользователя")
     name = models.TextField(max_length=500, blank=True, verbose_name="ФИО")
     rank = models.ForeignKey(Rank,  models.SET_NULL, blank=True, null=True,  verbose_name="Звание")
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="Город")
