@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 
 export default function MainPageForCenter({setShowBody}) {
   const curr = new Date();
+  const [currDate, setCurrDate] = useState(curr);
   const firstDay = new Date(curr.getFullYear(), curr.getMonth(), 1, 5);
   const lastDay = new Date(curr.getFullYear(), curr.getMonth() + 1, 0, 5);
 
@@ -16,7 +17,7 @@ export default function MainPageForCenter({setShowBody}) {
 
   const [endDateForModal, setEndDateForModal] = useState(null);
 
-  const [month, setMonth] = useState(curr.getMonth());
+  const [month, setMonth] = useState(currDate.getMonth());
 
   const [massWithDate, setMassWithDate] = useState([]);
 
@@ -57,9 +58,9 @@ export default function MainPageForCenter({setShowBody}) {
   return (
     <div>
       <div>
-        <Button className="" type='primary' text="Управление должностями" onClick={() => {
-          setShowBody('listOfPost')
-        }}/>
+        {/*<Button className="" type='primary' text="Управление должностями" onClick={() => {*/}
+        {/*  setShowBody('listOfPost')*/}
+        {/*}}/>*/}
         <Button className="" type='primary' text="Управление л/с" onClick={() => {
           setShowBody('listOfPerson')
         }}/>
@@ -69,6 +70,7 @@ export default function MainPageForCenter({setShowBody}) {
         <select className="rounded border border-blue-700 p-1 bg-white" value={month} onChange={e => {
           const curr = new Date();
           curr.setMonth(e.target.value);
+          setCurrDate(curr);
           setStartDate(new Date(curr.getFullYear(), curr.getMonth(), 1, 5));
           setEndDate(new Date(curr.getFullYear(), curr.getMonth() + 1, 0, 5));
           setMonth(e.target.value)
@@ -132,7 +134,7 @@ export default function MainPageForCenter({setShowBody}) {
       <MyModal show={show} showModal={setShow}>
         <div className="border-b m-1 mb-4 p-2 flex">
           <span
-            className="my-auto">{personModal.name} ({objectModal.date}.{curr.getMonth() + 1}.{curr.getFullYear()})</span>
+            className="my-auto">{personModal.name} ({objectModal.date}.{currDate.getMonth() + 1}.{currDate.getFullYear()})</span>
           <span className="ml-auto" onClick={() => setShow(false)}>x</span>
         </div>
 
@@ -160,14 +162,14 @@ export default function MainPageForCenter({setShowBody}) {
           customInput={<InputForDatePicker/>}
           isClearable
           placeholderText="По какое число..."
-          minDate={new Date(curr.getFullYear(), curr.getMonth(), objectModal.date)}
+          minDate={new Date(currDate.getFullYear(), currDate.getMonth(), objectModal.date)}
         />
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
-          const month = curr.getMonth() + 1 >= 10 ? curr.getMonth() + 1 : '0' + curr.getMonth() + 1;
+          const month = currDate.getMonth() + 1 >= 10 ? currDate.getMonth() + 1 : '0' + (currDate.getMonth() + 1);
           const day = objectModal.date.length >= 2 ? objectModal.date : '0' + objectModal.date;
           workWithServer.setOneReport({
             'data': objectModal,
-            'date': `${curr.getFullYear()}-${month}-${day}`,
+            'date': `${currDate.getFullYear()}-${month}-${day}`,
             'date_end': endDateForModal
           }).then(() => {
             workWithServer.getListOfReport({'date_begin': startDate, 'date_end': endDate}).then(data => {
