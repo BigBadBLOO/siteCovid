@@ -38,6 +38,7 @@ export default function ListOfPerson({setShowBody}) {
       refIs_military.current.value = el.is_military.toString();
       refGroup_id.current.value = Number(el.group_id);
       refRank_id.current.value = Number(el.rank_id);
+      refPost_id.current.value = Number(el.post_id);
       refName.current.value = el.name;
       refCity_id.current.value = Number(el.city_id);
       refIs_woman_with_children.current.value = el.is_woman_with_children.toString()

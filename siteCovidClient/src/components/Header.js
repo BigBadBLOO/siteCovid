@@ -3,6 +3,7 @@ import Button from "./Button";
 import workWithServer from "../core/workWithServer";
 import {initUser} from "../redux/actions/actions";
 import {connect} from "react-redux";
+import doc from '../documentation.docx'
 
 function Header({user, initUser, headerRef}) {
   const [changePassword, setChangePassword] = useState(false);
@@ -14,7 +15,10 @@ function Header({user, initUser, headerRef}) {
   return (
     <>
       <div ref={headerRef} className="p-3 border-b flex justify-between">
-        <span className="my-auto p-2 border rounded border-blue-600">{user.username} - {user.group}</span>
+        <div>
+          <span className="my-auto p-2 border rounded border-blue-600">{user.username} - {user.group}</span>
+          <a href={doc} className="my-auto p-2 no-underline hover:underline text-blue-500">Документация</a>
+        </div>
         <div>
           {!user.is_control && (!changePassword
             ? <Button className="" type='warning' onClick={() => {
@@ -28,7 +32,9 @@ function Header({user, initUser, headerRef}) {
                        placeholder="Введите новый пароль..."/>
                 <Button type='warning' onClick={() => {
                   setChangePassword(false);
-                  workWithServer.changePassword({'password': password}).then(() => {initUser({...user, username: ''})});
+                  workWithServer.changePassword({'password': password}).then(() => {
+                    initUser({...user, username: ''})
+                  });
                 }} text="Сохранить пароль"/>
               </>
             ))
