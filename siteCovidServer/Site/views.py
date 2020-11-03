@@ -122,11 +122,11 @@ def setListOfPost(request):
 
 def getListOfPerson(request):
   user = request.user
-  persons = UserForControl.objects.all().order_by('group_id').order_by('name')
+  persons = UserForControl.objects.all().order_by('-is_military', 'name')
 
   if not user.profile.is_control:
     groups = user.profile.group.get_children()
-    persons = persons.filter(group_id__in=groups).order_by('group__position', 'post__position', 'name', '-is_military')
+    persons = persons.filter(group_id__in=groups)
   persons_mass = []
   for p in persons:
     group = p.group.get_main_parent() if user.profile.is_control else p.group

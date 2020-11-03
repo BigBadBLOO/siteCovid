@@ -45,7 +45,7 @@ export default function ListOfPerson({setShowBody}) {
     })
   }, [listOfPerson]);
 
-  const filterListOfPeople = listOfPerson.filter(el => el.name.indexOf(searchByName) > -1);
+  const filterListOfPeople = listOfPerson.filter(el => el.name.toLowerCase().indexOf(searchByName.toLowerCase()) > -1);
 
   const columns = [
     {

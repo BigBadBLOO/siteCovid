@@ -9,6 +9,7 @@ import DatePicker from "react-datepicker";
 export default function MainPageForCenter({setShowBody}) {
   const curr = new Date();
   const [currDate, setCurrDate] = useState(curr);
+
   const firstDay = new Date(curr.getFullYear(), curr.getMonth(), 1, 5);
   const lastDay = new Date(curr.getFullYear(), curr.getMonth() + 1, 0, 5);
 
@@ -64,9 +65,9 @@ export default function MainPageForCenter({setShowBody}) {
         <Button className="" type='primary' text="Управление л/с" onClick={() => {
           setShowBody('listOfPerson')
         }}/>
-        <Button className="" type='primary' text="Сформировать отчет" onClick={() => {
-          setShowBody('makeReport')
-        }}/>
+        {/*<Button className="" type='primary' text="Сформировать отчет" onClick={() => {*/}
+        {/*  setShowBody('makeReport')*/}
+        {/*}}/>*/}
         <select className="rounded border border-blue-700 p-1 bg-white" value={month} onChange={e => {
           const curr = new Date();
           curr.setMonth(e.target.value);
@@ -99,43 +100,43 @@ export default function MainPageForCenter({setShowBody}) {
         </div>
       </div>
       <div>
-        <div className="m-2 overflow-x-auto">
-          <div className="flex">
-            <p className="w-12 p-1 border">№</p>
-            <p className="w-40 p-1 border">Звание</p>
-            <p className="w-56 p-1 border">ФИО</p>
-            {massWithDate.map(el => <p className={clsx("p-1 border w-12 inline-block", {
+        <table className="m-2 overflow-x-auto">
+          <tr className="">
+            <td className="w-12 p-1 border">№</td>
+            <td className="w-40 p-1 border">Звание</td>
+            <td className="w-56 p-1 border">ФИО</td>
+            {massWithDate.map(el => <td className={clsx("p-1 border", {
               'bg-blue-200 bg-opacity-25': el.getDay() === 0 || el.getDay() === 6,
               'bg-red-200 bg-opacity-25': el.getDate() === curr.getDate(),
             })}>
-              <Moment format="DD">{el}</Moment></p>)}
-          </div>
+              <Moment format="DD">{el}</Moment></td>)}
+          </tr>
           {listOfPerson.map((el, index) => {
             const listReportByPerson = listOfReport.filter(obj => obj.userForControl_id === el.id);
-            return <div className="flex">
-              <p className="w-12 p-1 border">{index + 1}</p>
-              <p className="w-40 p-1 border">{el.rank_id__name}</p>
-              <p className="w-56  p-1 border cursor-pointer">{el.name}</p>
+            return <tr className="">
+              <td className="w-12 p-1 border">{index + 1}</td>
+              <td className="w-40 p-1 border">{el.rank_id__name}</td>
+              <td className="w-56  p-1 border cursor-pointer">{el.name}</td>
               {massWithDate.map(date => {
                 const filter = listReportByPerson.filter(obj => Number(obj.date) === date.getDate() && !!obj.status_id);
-                return <p className={clsx("p-1 border w-12 text-center align-middle text-red-500 cursor-pointer", {
+                return <td className={clsx("p-1 border w-12 text-center align-middle text-red-500 cursor-pointer", {
                   'bg-blue-200 bg-opacity-25': date.getDay() === 0 || date.getDay() === 6,
                   'bg-red-200 bg-opacity-25': date.getDate() === curr.getDate(),
                 })} onClick={() => {
                   modal(el, filter, date.getDate())
                 }}>
                   {filter.length > 0 ? filter[0]['status_id__abbr'] ? filter[0]['status_id__abbr'] : '+' : ''}
-                </p>
+                </td>
               })}
-            </div>
+            </tr>
           })}
-        </div>
+        </table>
       </div>
       <MyModal show={show} showModal={setShow}>
         <div className="border-b m-1 mb-4 p-2 flex">
           <span
             className="my-auto">{personModal.name} ({objectModal.date}.{currDate.getMonth() + 1}.{currDate.getFullYear()})</span>
-          <span className="ml-auto" onClick={() => setShow(false)}>x</span>
+          <span className="ml-auto cursor-pointer" onClick={() => setShow(false)}>x</span>
         </div>
 
         <label>Выберите статус:</label>

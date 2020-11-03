@@ -23,6 +23,18 @@ function makeTableData(mass) {
   )
 }
 
+function makeTableHeader() {
+  return (
+    <div className="flex">
+      <p className="border p-1 inline-block w-1/5"> №</p>
+      <p className="border p-1 inline-block w-1/5"> Подразделение</p>
+      <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
+      <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
+      <p className="border p-1 inline-block w-1/5"> Комментарий</p>
+    </div>
+  )
+}
+
 function SeeReport({setShowBody, headerRef}) {
   const [startDate, setStartDate] = useState(new Date());
   const printRef = createRef();
@@ -71,7 +83,7 @@ function SeeReport({setShowBody, headerRef}) {
   const withRespiratornoAmb = withDisease.filter(el => el.status_id__name === 'Респираторное заболевание, амбулаторно');
   const withRespiratornoStat = withDisease.filter(el => el.status_id__name === 'Респираторное заболевание, стационарно');
 
-  const withKarantin = listOfPerson.filter(el => el.status_id__name === 'Карантин');
+  const withKarantin = withDisease.filter(el => el.status_id__name === 'Карантин');
 
   const withCovidAmb = withDisease.filter(el => el.status_id__name === 'Коронавирус, амбулаторно');
   const withCovidStat = withDisease.filter(el => el.status_id__name === 'Коронавирус, стационарно');
@@ -143,17 +155,11 @@ function SeeReport({setShowBody, headerRef}) {
         </p>
         <p className="font-bold text-center ">
           Не ОРВИ {withNoInfectionAmb.length + withNoInfectionStat.length} - чел.
-          ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionAmb.filter(el => el.is_military).length} в/сл,
-          {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionAmb.filter(el => !el.is_military).length} гп)
+          ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionStat.filter(el => el.is_military).length} в/сл,
+          {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionStat.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/5"> №</p>
-            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
-            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
-            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
-          </div>
+          {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withNoInfectionStat)}
           <p className="font-bold text-center border p-1">Амбулаторно</p>
@@ -165,13 +171,7 @@ function SeeReport({setShowBody, headerRef}) {
           {withPnevmoniaAmb.filter(el => !el.is_military).length + withPnevmoniaStat.filter(el => !el.is_military).length} гп)
         </p>
         <div className=" mt-1 text-center">
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/5"> №</p>
-            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
-            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
-            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
-          </div>
+          {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withPnevmoniaStat)}
           <p className="font-bold text-center border p-1">Амбулаторно</p>
@@ -185,13 +185,7 @@ function SeeReport({setShowBody, headerRef}) {
           {withRespiratornoStat.filter(el => !el.is_military).length + withRespiratornoAmb.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/5"> №</p>
-            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
-            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
-            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
-          </div>
+          {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withRespiratornoStat)}
           <p className="font-bold text-center border p-1">Амбулаторно</p>
@@ -204,13 +198,7 @@ function SeeReport({setShowBody, headerRef}) {
           {withKarantin.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/5"> №</p>
-            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
-            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
-            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
-          </div>
+          {makeTableHeader()}
           {makeTableData(withKarantin)}
         </div>
         <p className="font-bold text-center mt-8">
@@ -219,13 +207,7 @@ function SeeReport({setShowBody, headerRef}) {
           {withCovidAmb.filter(el => !el.is_military).length + withCovidStat.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center">
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/5"> №</p>
-            <p className="border p-1 inline-block w-1/5"> Подразделение</p>
-            <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
-            <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-            <p className="border p-1 inline-block w-1/5"> Комментарий</p>
-          </div>
+          {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withCovidStat)}
           <p className="font-bold text-center border p-1">Амбулаторно</p>
