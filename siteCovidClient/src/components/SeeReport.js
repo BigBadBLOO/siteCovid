@@ -104,13 +104,13 @@ function SeeReport({setShowBody, headerRef}) {
           printRef.current.classList.remove('hidden');
           headerRef.current.classList.remove('hidden');
         }}/>
-        <DatePicker
-          className="rounded border border-blue-700 p-1"
-          selected={startDate}
-          onChange={setStartDate}
-          dateFormat="dd.MM.yyyy"
-          customInput={<InputForDatePicker/>}
-        />
+        {/*<DatePicker*/}
+        {/*  className="rounded border border-blue-700 p-1"*/}
+        {/*  selected={startDate}*/}
+        {/*  onChange={setStartDate}*/}
+        {/*  dateFormat="dd.MM.yyyy"*/}
+        {/*  customInput={<InputForDatePicker/>}*/}
+        {/*/>*/}
       </div>
 
       <div className="m-4">
