@@ -4,6 +4,7 @@ import workWithServer from "../core/workWithServer";
 import {initUser} from "../redux/actions/actions";
 import {connect} from "react-redux";
 import doc from '../documentation.docx'
+import doc_control from '../doc_control.docx'
 
 function Header({user, initUser, headerRef}) {
   const [changePassword, setChangePassword] = useState(false);
@@ -12,12 +13,14 @@ function Header({user, initUser, headerRef}) {
     workWithServer.logOut().then(() => initUser({...user, username: ''}))
   };
 
+  const href_to_doc = user.is_control ? doc_control : doc;
+
   return (
     <>
       <div ref={headerRef} className="p-3 border-b flex justify-between">
         <div>
           <span className="my-auto p-2 border rounded border-blue-600">{user.username} - {user.group}</span>
-          <a href={doc} className="my-auto p-2 no-underline hover:underline text-blue-500">Документация</a>
+          <a href={href_to_doc} className="my-auto p-2 no-underline hover:underline text-blue-500">Документация</a>
         </div>
         <div>
           {!user.is_control && (!changePassword
