@@ -158,7 +158,7 @@ export default function MainPageForCenter({setShowBody}) {
           setShowError(false);
           setObjectModal({...objectModal, comment: e.target.value})
         }}/>
-        {showError && <label className="text-red-500">Вам необходимо заполнить комментарий</label>}
+        {showError && <p className="text-red-500 text-center">Вам необходимо заполнить комментарий</p>}
         <p className="">По какое число:</p>
         <DatePicker
           className="rounded border border-blue-700 p-1 w-full"

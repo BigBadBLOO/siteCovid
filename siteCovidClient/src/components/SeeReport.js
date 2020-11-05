@@ -3,6 +3,7 @@ import Button, {InputForDatePicker} from "./Button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import workWithServer from "../core/workWithServer";
+import Moment from "react-moment";
 
 
 function makeTableData(mass) {
@@ -10,12 +11,12 @@ function makeTableData(mass) {
     mass.length > 0
       ? mass.map((el, index) => {
         return (
-          <div className="flex break-words text-sm">
-            <p className="border p-1 inline-block w-1/12">{index + 1}</p>
-            <p className="border p-1 inline-block w-2/12">{el.group_id__name}</p>
-            <p className="border p-1 inline-block w-2/12">{el.rank_id__name}</p>
+          <div className="flex break-words">
+            <p className="border p-1 inline-block" style={{width: "5%"}}>{index + 1}</p>
+            <p className="border p-1 inline-block" style={{width: "12%"}}>{el.group_id__name}</p>
+            <p className="border p-1 inline-block" style={{width: "13%"}}>{el.rank_id__name}</p>
             <p className="border p-1 inline-block w-3/12">{el.name}</p>
-            <p className="border p-1 inline-block w-4/12"> {el.comment}</p>
+            <p className="border p-1 inline-block w-6/12"> {el.comment}</p>
           </div>
         )
       })
@@ -25,12 +26,12 @@ function makeTableData(mass) {
 
 function makeTableHeader() {
   return (
-    <div className="flex break-words  text-sm">
-      <p className="border p-1 inline-block w-1/12"> №</p>
-      <p className="border p-1 inline-block w-2/12"> Подразделение</p>
-      <p className="border p-1 inline-block w-2/12"> Воинское звание</p>
+    <div className="flex break-words ">
+      <p className="border p-1 inline-block" style={{width: "5%"}}> №</p>
+      <p className="border p-1 inline-block" style={{width: "12%"}}> Подразделение</p>
+      <p className="border p-1 inline-block" style={{width: "13%"}}> Воинское звание</p>
       <p className="border p-1 inline-block w-3/12"> Фамилия, инициалы</p>
-      <p className="border p-1 inline-block w-4/12"> Комментарии</p>
+      <p className="border p-1 inline-block w-6/12"> Комментарии</p>
     </div>
   )
 }
@@ -158,7 +159,7 @@ function SeeReport({setShowBody, headerRef}) {
           ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionStat.filter(el => el.is_military).length} в/сл,
           {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionStat.filter(el => !el.is_military).length} гп)
         </p>
-        <div className="mt-1 text-center">
+        <div className="mt-1 text-center text-xs">
           {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withNoInfectionStat)}
@@ -170,7 +171,7 @@ function SeeReport({setShowBody, headerRef}) {
           ({withPnevmoniaAmb.filter(el => el.is_military).length + withPnevmoniaStat.filter(el => el.is_military).length} в/сл,
           {withPnevmoniaAmb.filter(el => !el.is_military).length + withPnevmoniaStat.filter(el => !el.is_military).length} гп)
         </p>
-        <div className=" mt-1 text-center">
+        <div className=" mt-1 text-center text-xs">
           {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withPnevmoniaStat)}
@@ -184,7 +185,7 @@ function SeeReport({setShowBody, headerRef}) {
           ({withRespiratornoStat.filter(el => el.is_military).length + withRespiratornoAmb.filter(el => el.is_military).length} в/сл,
           {withRespiratornoStat.filter(el => !el.is_military).length + withRespiratornoAmb.filter(el => !el.is_military).length} гп)
         </p>
-        <div className="mt-1 text-center">
+        <div className="mt-1 text-center text-xs">
           {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withRespiratornoStat)}
@@ -197,7 +198,7 @@ function SeeReport({setShowBody, headerRef}) {
           ({withKarantin.filter(el => el.is_military).length} в/сл,
           {withKarantin.filter(el => !el.is_military).length} гп)
         </p>
-        <div className="mt-1 text-center">
+        <div className="mt-1 text-center text-xs">
           {makeTableHeader()}
           {makeTableData(withKarantin)}
         </div>
@@ -206,18 +207,21 @@ function SeeReport({setShowBody, headerRef}) {
           ({withCovidAmb.filter(el => el.is_military).length + withCovidStat.filter(el => el.is_military).length} в/сл,
           {withCovidAmb.filter(el => !el.is_military).length + withCovidStat.filter(el => !el.is_military).length} гп)
         </p>
-        <div className="mt-1 text-center">
+        <div className="mt-1 text-center text-xs">
           {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
           {makeTableData(withCovidStat)}
           <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withCovidAmb)}
         </div>
-        <div className="mt-4 text-right">
-          <p className="p-1">Офицер оперативной группы ФГКУ "12 ЦНИИ" Минобороны России</p>
-          <p className="p-1">__________________________</p>
+        <div className="mt-4 text-left">
+          <p className="p-1">Офицер оперативной группы в/ч 51105</p>
+          <Moment className=" p-1" format="DD.MM.YYYY">{startDate}</Moment>
+          <p className="text-right p-1">_____________________________________________________________________</p>
+          <p className="text-right p-1"><pre>воинское звание    подпись    инициал имени, фамилия</pre></p>
           <p className="p-1">Начальник ФГКУ "12 ЦНИИ" Минобороны России</p>
-          <p className="p-1">__________________________</p>
+          <p className="text-right p-1">_____________________________________________________________________</p>
+          <p className="text-right p-1"><pre>воинское звание    подпись    инициал имени, фамилия</pre></p>
         </div>
       </div>
     </>

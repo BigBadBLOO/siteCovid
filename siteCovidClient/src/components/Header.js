@@ -17,7 +17,7 @@ function Header({user, initUser, headerRef}) {
       <div ref={headerRef} className="p-3 border-b flex justify-between">
         <div>
           <span className="my-auto p-2 border rounded border-blue-600">{user.username} - {user.group}</span>
-          {/*<a href={doc} className="my-auto p-2 no-underline hover:underline text-blue-500">Документация</a>*/}
+          <a href={doc} className="my-auto p-2 no-underline hover:underline text-blue-500">Документация</a>
         </div>
         <div>
           {!user.is_control && (!changePassword
