@@ -115,6 +115,10 @@ function SeeReport({setShowBody, headerRef}) {
       </div>
 
       <div className="m-4">
+        <div className="float-right" style={{marginLeft: '100%'}}>
+          <p className="text-center p-1">Начальник ФГКУ "12 ЦНИИ"<br/> Минобороны России</p>
+          <p className="text-right p-1">_________________________________</p>
+        </div>
         <p className="text-center">
           СПРАВКА-ДОКЛАД <br/>
           о состоянии дел в ФГКУ "12 ЦНИИ" Минобороны России <br/>
@@ -218,10 +222,9 @@ function SeeReport({setShowBody, headerRef}) {
           <p className="p-1">Офицер оперативной группы в/ч 51105</p>
           <Moment className=" p-1" format="DD.MM.YYYY">{startDate}</Moment>
           <p className="text-right p-1">_____________________________________________________________________</p>
-          <p className="text-right p-1"><pre>воинское звание    подпись    инициал имени, фамилия</pre></p>
-          <p className="p-1">Начальник ФГКУ "12 ЦНИИ" Минобороны России</p>
-          <p className="text-right p-1">_____________________________________________________________________</p>
-          <p className="text-right p-1"><pre>воинское звание    подпись    инициал имени, фамилия</pre></p>
+          <p className="text-right p-1">
+            <pre>воинское звание    подпись    инициал имени, фамилия</pre>
+          </p>
         </div>
       </div>
     </>
