@@ -99,6 +99,7 @@ class UserForControl(models.Model):
 class Status(models.Model):
     name = models.TextField(max_length=500, blank=True, verbose_name=" Название")
     abbr = models.TextField(max_length=500, blank=True, verbose_name=" Сокращение")
+    is_required = models.BooleanField(default=True, verbose_name="Обязательный комментарий")
 
     def __str__(self):
         return self.name

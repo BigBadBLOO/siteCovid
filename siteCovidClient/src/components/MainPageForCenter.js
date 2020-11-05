@@ -30,6 +30,8 @@ export default function MainPageForCenter({setShowBody}) {
   const [personModal, setPersonModal] = useState({});
   const [objectModal, setObjectModal] = useState({});
 
+  const [showError, setShowError] = useState(false);
+
   const modal = (person, obj, date) => {
     setPersonModal(person);
     setObjectModal(obj.length > 0 ? obj[0] : {
@@ -123,6 +125,7 @@ export default function MainPageForCenter({setShowBody}) {
                   'bg-blue-200 bg-opacity-25': date.getDay() === 0 || date.getDay() === 6,
                   'bg-red-200 bg-opacity-25': date.getDate() === curr.getDate(),
                 })} onClick={() => {
+                  setShowError(false);
                   modal(el, filter, date.getDate())
                 }}>
                   {filter.length > 0 ? filter[0]['status_id__abbr'] ? filter[0]['status_id__abbr'] : '+' : ''}
@@ -152,8 +155,10 @@ export default function MainPageForCenter({setShowBody}) {
         <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
                   value={objectModal.comment}
                   placeholder="Оставьте комментарий..." onChange={(e) => {
+          setShowError(false);
           setObjectModal({...objectModal, comment: e.target.value})
         }}/>
+        {showError && <label className="text-red-500">Вам необходимо заполнить комментарий</label>}
         <p className="">По какое число:</p>
         <DatePicker
           className="rounded border border-blue-700 p-1 w-full"
@@ -166,6 +171,14 @@ export default function MainPageForCenter({setShowBody}) {
           minDate={new Date(currDate.getFullYear(), currDate.getMonth(), objectModal.date)}
         />
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
+          if (objectModal.status_id) {
+            let status = listStatus.filter(el => el.id === objectModal.status_id);
+            status = status.length > 0 ? status[0] : {};
+            if (status.is_required && !objectModal.comment) {
+              setShowError(true);
+              return;
+            }
+          }
           const month = currDate.getMonth() + 1 >= 10 ? currDate.getMonth() + 1 : '0' + (currDate.getMonth() + 1);
           const day = objectModal.date.length >= 2 ? objectModal.date : '0' + objectModal.date;
           workWithServer.setOneReport({

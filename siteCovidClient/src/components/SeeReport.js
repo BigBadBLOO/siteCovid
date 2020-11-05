@@ -10,12 +10,12 @@ function makeTableData(mass) {
     mass.length > 0
       ? mass.map((el, index) => {
         return (
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/5">{index + 1}</p>
-            <p className="border p-1 inline-block w-1/5">{el.group_id__name}</p>
-            <p className="border p-1 inline-block w-1/5">{el.rank_id__name}</p>
-            <p className="border p-1 inline-block w-1/5">{el.name}</p>
-            <p className="border p-1 inline-block w-1/5"> {el.comment}</p>
+          <div className="flex break-words text-sm">
+            <p className="border p-1 inline-block w-1/12">{index + 1}</p>
+            <p className="border p-1 inline-block w-2/12">{el.group_id__name}</p>
+            <p className="border p-1 inline-block w-2/12">{el.rank_id__name}</p>
+            <p className="border p-1 inline-block w-3/12">{el.name}</p>
+            <p className="border p-1 inline-block w-4/12"> {el.comment}</p>
           </div>
         )
       })
@@ -25,12 +25,12 @@ function makeTableData(mass) {
 
 function makeTableHeader() {
   return (
-    <div className="flex">
-      <p className="border p-1 inline-block w-1/5"> №</p>
-      <p className="border p-1 inline-block w-1/5"> Подразделение</p>
-      <p className="border p-1 inline-block w-1/5"> Воиское звание</p>
-      <p className="border p-1 inline-block w-1/5"> Фамилия, иницалы</p>
-      <p className="border p-1 inline-block w-1/5"> Комментарий</p>
+    <div className="flex break-words  text-sm">
+      <p className="border p-1 inline-block w-1/12"> №</p>
+      <p className="border p-1 inline-block w-2/12"> Подразделение</p>
+      <p className="border p-1 inline-block w-2/12"> Воинское звание</p>
+      <p className="border p-1 inline-block w-3/12"> Фамилия, инициалы</p>
+      <p className="border p-1 inline-block w-4/12"> Комментарии</p>
     </div>
   )
 }
@@ -132,8 +132,8 @@ function SeeReport({setShowBody, headerRef}) {
         <div className="mt-1 text-center">
           <div className="flex">
             <p className="border p-1 inline-block w-1/3"> ППД</p>
-            <p className="border p-1 inline-block w-1/3"> Военнослужащих</p>
-            <p className="border p-1 inline-block w-1/3"> Гр. персонала</p>
+            <p className="border p-1 inline-block w-1/3"> Военнослужащие</p>
+            <p className="border p-1 inline-block w-1/3"> Гр. персонал</p>
           </div>
           {listOfCity.map(el => {
             return (
@@ -212,6 +212,12 @@ function SeeReport({setShowBody, headerRef}) {
           {makeTableData(withCovidStat)}
           <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withCovidAmb)}
+        </div>
+        <div className="mt-4 text-right">
+          <p className="p-1">Офицер оперативной группы ФГКУ "12 ЦНИИ" Минобороны России</p>
+          <p className="p-1">__________________________</p>
+          <p className="p-1">Начальник ФГКУ "12 ЦНИИ" Минобороны России</p>
+          <p className="p-1">__________________________</p>
         </div>
       </div>
     </>

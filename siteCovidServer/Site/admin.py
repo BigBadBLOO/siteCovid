@@ -17,7 +17,7 @@ class UserAdmin(UserAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'group', 'phone', 'is_control')
     search_fields = ['user', 'group', 'phone', 'is_control']
-    ordering = ['user__name']
+    ordering = ['user__username']
 
 
 class UserForControlAdmin(admin.ModelAdmin):
