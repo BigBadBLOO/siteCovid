@@ -75,6 +75,9 @@ function SeeReport({setShowBody, headerRef}) {
 
   let withDisease = listOfPerson.filter(el => !!el.status_id);
 
+  const onRemoteWork = withDisease.filter(el => el.status_id__name === 'Удаленная работа');
+
+
   const withNoInfectionAmb = withDisease.filter(el => el.status_id__name === 'Неинфекционное заболевание, амбулаторно');
   const withNoInfectionStat = withDisease.filter(el => el.status_id__name === 'Неинфекционное заболевание, стационарно');
 
@@ -134,25 +137,42 @@ function SeeReport({setShowBody, headerRef}) {
           гражданские - <b>{onWorkPeople.length}</b> чел., из них женщин с детьми до 14 лет
           - {onWorkPeopleWithChildren.length} чел.
         </p>
-        <div className="mt-1 text-center">
+        <div className="mt-1 text-center text-xs break-words">
           <div className="flex">
-            <p className="border p-1 inline-block w-1/4">ППД</p>
-            <p className="border p-1 inline-block w-1/4">Военнослужащие</p>
-            <p className="border p-1 inline-block w-1/4">Гр. персонал</p>
-            <p className="border p-1 inline-block w-1/4">Итого</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>ППД</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Военнослужащие</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Гр. персонал</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Covid</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>ОРВ</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Другое</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Самоизоляция</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Удаленная работа</p>
           </div>
           {listOfCity.map(el => {
             return (
               <div className="flex">
-                <span className="border p-1 inline-block w-1/4">{el.name}</span>
-                <span className="border p-1 inline-block w-1/4">
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>{el.name}</span>
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
                   {onWorkMilitary.filter(obj => obj.city_id === el.id).length}
                 </span>
-                <span className="border p-1 inline-block w-1/4">
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
                   {onWorkPeople.filter(obj => obj.city_id === el.id).length}
                 </span>
-                <span className="border p-1 inline-block w-1/4">
-                  {onWorkMilitary.filter(obj => obj.city_id === el.id).length + onWorkPeople.filter(obj => obj.city_id === el.id).length}
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                  {withCovidStat.filter(obj => obj.city_id === el.id).length + withCovidAmb.filter(obj => obj.city_id === el.id).length}
+                </span>
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                  {withRespiratornoAmb.filter(obj => obj.city_id === el.id).length + withRespiratornoStat.filter(obj => obj.city_id === el.id).length}
+                </span>
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                  {withNoInfectionAmb.filter(obj => obj.city_id === el.id).length + withNoInfectionStat.filter(obj => obj.city_id === el.id).length +
+                  withPnevmoniaAmb.filter(obj => obj.city_id === el.id).length + withPnevmoniaStat.filter(obj => obj.city_id === el.id).length}
+                </span>
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                  {withKarantin.filter(obj => obj.city_id === el.id).length}
+                </span>
+                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                  {onRemoteWork.filter(obj => obj.city_id === el.id).length}
                 </span>
               </div>
             )
@@ -161,85 +181,6 @@ function SeeReport({setShowBody, headerRef}) {
 
         <p className="mt-2">
           <b>2. Число заболевших:</b><br/>
-        </p>
-        <div className="mt-1 text-center">
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/4"/>
-            <p className="border p-1 inline-block w-1/4">Военнослужащие</p>
-            <p className="border p-1 inline-block w-1/4">Гр. персонал</p>
-            <p className="border p-1 inline-block w-1/4">Итого</p>
-          </div>
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/4">Неинфекционное заболевание</p>
-            <p className="border p-1 inline-block w-1/4">
-              {withNoInfectionAmb.filter(el => el.is_military).length +
-              withNoInfectionStat.filter(el => el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withNoInfectionAmb.filter(el => !el.is_military).length +
-              withNoInfectionStat.filter(el => !el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withNoInfectionAmb.length + withNoInfectionStat.length}
-            </p>
-          </div>
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/4">Пневмония</p>
-            <p className="border p-1 inline-block w-1/4">
-              {withPnevmoniaAmb.filter(el => el.is_military).length +
-              withPnevmoniaStat.filter(el => el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withPnevmoniaAmb.filter(el => !el.is_military).length +
-              withPnevmoniaStat.filter(el => !el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withPnevmoniaAmb.length + withPnevmoniaStat.length}
-            </p>
-          </div>
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/4">Респираторное заболевание</p>
-            <p className="border p-1 inline-block w-1/4">
-              {withRespiratornoAmb.filter(el => el.is_military).length +
-              withRespiratornoStat.filter(el => el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withRespiratornoAmb.filter(el => !el.is_military).length +
-              withRespiratornoStat.filter(el => !el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withRespiratornoAmb.length + withRespiratornoStat.length}
-            </p>
-          </div>
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/4">Карантин (самоизоляция)</p>
-            <p className="border p-1 inline-block w-1/4">
-              {withKarantin.filter(el => el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withKarantin.filter(el => !el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withKarantin.length}
-            </p>
-          </div>
-          <div className="flex">
-            <p className="border p-1 inline-block w-1/4">Коронавирус</p>
-            <p className="border p-1 inline-block w-1/4">
-              {withCovidAmb.filter(el => el.is_military).length +
-              withCovidStat.filter(el => el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withCovidAmb.filter(el => !el.is_military).length +
-              withCovidStat.filter(el => !el.is_military).length}
-            </p>
-            <p className="border p-1 inline-block w-1/4">
-              {withCovidAmb.length + withCovidStat.length}
-            </p>
-          </div>
-
-        </div>
-        <p className="mt-2">
           Всего - <b>{withDisease.length}</b> <br/>
           в том числе:
         </p>
