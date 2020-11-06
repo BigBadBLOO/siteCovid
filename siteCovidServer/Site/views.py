@@ -259,7 +259,7 @@ def setOneReport(request):
       obj.comment = comment
       obj.save()
     else:
-      DayData.objects.create(
+      obj = DayData.objects.create(
         date=date,
         comment=comment,
         status=status,
