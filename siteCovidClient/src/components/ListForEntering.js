@@ -40,7 +40,14 @@ function ListForEntering({headerRef, setShowBody}) {
     getListOfReport();
   }, [startDate]);
 
-  const onWorkAll = listOfPerson.filter(el => !el.status_id || el.status_id__name === 'Наряд');
+  // const onWorkAll = listOfPerson.filter(el => !el.status_id || el.status_id__name === 'Наряд');
+
+  const onWorkAll = listOfPerson.filter(el => {
+    if(startDate.getDay() === 0 || startDate.getDay() === 6){
+      return el.status_id__name === 'Наряд'
+    }
+    return !el.status_id || el.status_id__name === 'Наряд'
+  });
 
   return (
     <>

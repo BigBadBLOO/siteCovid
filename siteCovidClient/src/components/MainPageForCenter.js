@@ -5,6 +5,7 @@ import Moment from "react-moment";
 import MyModal from "./Modal";
 import clsx from "clsx";
 import DatePicker from "react-datepicker";
+import moment from "moment";
 
 export default function MainPageForCenter({setShowBody}) {
   const curr = new Date();
@@ -44,15 +45,15 @@ export default function MainPageForCenter({setShowBody}) {
       el.status_id = status.parent_id;
       setExtraStatus(listStatus.filter(el => el.parent_id === status.parent_id));
       console.log(extraFields);
-      status.with_extraField && Object.keys(extrafields).length === 0 && setExtraFields({
-        'state': '', 't': '', 'test': ''
-      });
+      status.with_extraField ? Object.keys(extrafields).length === 0 && setExtraFields({
+        't': ''
+      }) : setExtraFields({});
     } else if (children_status.length > 0) {
       el.extra_status_id = children_status[0].id;
       el.status_id = status.id;
-      children_status[0].with_extraField && Object.keys(extrafields).length === 0 && setExtraFields({
-        'state': '', 't': '', 'test': ''
-      });
+      children_status[0].with_extraField ? Object.keys(extrafields).length === 0 && setExtraFields({
+        't': ''
+      }) : setExtraFields({});
     } else {
       setExtraFields({});
       el.extra_status_id = null
@@ -176,8 +177,8 @@ export default function MainPageForCenter({setShowBody}) {
           <span className="ml-auto cursor-pointer" onClick={() => setShow(false)}>x</span>
         </div>
 
-        <label>Выберите статус:</label>
-        <select className="my-4 w-full h-full border-b border-blue-700 bg-white" value={objectModal.status_id}
+        <p className="my-2">Выберите статус:</p>
+        <select className="w-full h-full border-b border-blue-700 bg-white" value={objectModal.status_id}
                 onChange={(e) => {
                   const value = e.target.value;
                   let comment = value ? objectModal.comment : '';
@@ -190,8 +191,8 @@ export default function MainPageForCenter({setShowBody}) {
           }}>{el.name}</option>)}
         </select>
         {extraStatus.length > 0 && <>
-          <label>Выберите доп статус:</label>
-          <select className="my-4 w-full h-full border-b border-blue-700 bg-white" value={objectModal.extra_status_id}
+          <p className="my-2">Выберите доп статус:</p>
+          <select className="w-full h-full border-b border-blue-700 bg-white" value={objectModal.extra_status_id}
                   onChange={(e) => {
                     const value = e.target.value;
                     const el = workWithStatus({...objectModal, status_id: Number(value)}, extraFields);
@@ -200,34 +201,67 @@ export default function MainPageForCenter({setShowBody}) {
             {extraStatus.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
           </select>
         </>}
-        <label>Комментарий</label>
-        <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
+
+        {showExtraFields && <>
+          <p className="my-2">Температура тела</p>
+          <input className="p-1 w-full border border-blue-700 bg-white rounded outline-none" value={extraFields.t}
+                 placeholder="Температура тела..." onKeyPress={(event) => {
+            if ((event.which != 46) && (event.which < 48 || event.which > 57)) {
+              event.preventDefault();
+            }
+          }} onChange={(e) => {
+            setShowError(false);
+            setExtraFields({...extraFields, t: e.target.value})
+          }}/>
+          <p className="my-2">Тест на Covid</p>
+          <div className="flex">
+            <DatePicker
+              className="rounded border border-blue-700 p-1 w-full"
+              selected={extraFields.test_date ? moment(extraFields.test_date, "DD.MM.YYYY").toDate() : null}
+              onChange={date => {
+                setExtraFields({...extraFields, test_date: date ? date.toLocaleDateString('ru') : ''})
+              }}
+              dateFormat="dd.MM.yyyy"
+              customInput={<InputForDatePicker/>}
+              isClearable
+              placeholderText="Дата теста..."
+            />
+            <input className="w-full p-1 border border-blue-700 bg-white rounded outline-none"
+                   value={extraFields.test} placeholder="Комментарий..." onChange={(e) => {
+              setShowError(false);
+              setExtraFields({...extraFields, test: e.target.value})
+            }}/>
+          </div>
+          {(!!extraFields.test_date || !!extraFields.test) && <>
+            <p className="my-2">Тест на Covid результат</p>
+            <div className="flex">
+              <DatePicker
+                className="rounded border border-blue-700 p-1 w-full"
+                selected={extraFields.test_result_date ? moment(extraFields.test_result_date, "DD.MM.YYYY").toDate() : null}
+                onChange={date => {
+                  setExtraFields({...extraFields, test_result_date: date ? date.toLocaleDateString('ru') : ''})
+                }}
+                dateFormat="dd.MM.yyyy"
+                customInput={<InputForDatePicker/>}
+                isClearable
+                placeholderText="Дата результата теста..."
+              />
+              <input className="w-full p-1 border border-blue-700 bg-white rounded outline-none"
+                     value={extraFields.test_result} placeholder="Результат теста на Covid..." onChange={(e) => {
+                setShowError(false);
+                setExtraFields({...extraFields, test_result: e.target.value})
+              }}/>
+            </div>
+          </>}
+
+        </>}
+        {showError && <p className="text-red-500 text-center">Вам необходимо заполнить все поля</p>}
+        <p className="my-2">Комментарий</p>
+        <textarea className="p-1 w-full border border-blue-700 bg-white rounded outline-none"
                   value={objectModal.comment}
                   placeholder="Оставьте комментарий..." onChange={(e) => {
           setObjectModal({...objectModal, comment: e.target.value})
         }}/>
-        {showExtraFields && <>
-          <label>Состояние на данный момент</label>
-          <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
-                    value={extraFields.state}
-                    placeholder="Состояние на данный момент..." onChange={(e) => {
-            setShowError(false);
-            setExtraFields({...extraFields, state: e.target.value})
-          }}/>
-          <label>Температура тела</label>
-          <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
-                    value={extraFields.t} placeholder="Температура тела..." onChange={(e) => {
-            setShowError(false);
-            setExtraFields({...extraFields, t: e.target.value})
-          }}/>
-          <label>Тест на Covid</label>
-          <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
-                    value={extraFields.test} placeholder="Тест на Covid..." onChange={(e) => {
-            setShowError(false);
-            setExtraFields({...extraFields, test: e.target.value})
-          }}/>
-        </>}
-        {showError && <p className="text-red-500 text-center">Вам необходимо заполнить все поля</p>}
         <p className="">По какое число:</p>
         <DatePicker
           className="rounded border border-blue-700 p-1 w-full"
@@ -240,8 +274,8 @@ export default function MainPageForCenter({setShowBody}) {
           minDate={new Date(currDate.getFullYear(), currDate.getMonth(), objectModal.date)}
         />
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
-          const listWithError = Object.values(extraFields).filter(el => !el);
-          if (listWithError.length > 0) {
+          console.log(extraFields);
+          if (('t' in extraFields && !extraFields.t) || ((!!extraFields.test || !!extraFields.test_date) && (!extraFields.test_result || !extraFields.test_result_date))) {
             setShowError(true);
             return
           }
