@@ -278,7 +278,7 @@ def setOneReport(request):
 
     while date_end >= date:
       obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
-      if date == date_temp:
+      if date == date_temp and obj is not None:
         if extraFields is not None:
           ExtraDataForDayData.objects.filter(data_id=obj.id).delete()
           for key in extraFields:
@@ -306,6 +306,7 @@ def getListOfReport(request):
   date_begin = data['date_begin'].split('T')[0] if 'date_begin' in data else None
   date_end = data['date_end'].split('T')[0] if 'date_end' in data else None
   obj = DayData.objects.all()
+  includeExtraFields = data['includeExtraFields'] if 'includeExtraFields' in data else None
 
   if date is not None:
     obj = obj.filter(date=date)
@@ -317,7 +318,7 @@ def getListOfReport(request):
     obj = obj.filter(userForControl_id__group_id__in=groups)
   resp = []
   for o in obj:
-    resp.append({
+    answer = {
       'id': o.id,
       'comment': o.comment,
       'status_id': o.status_id,
@@ -325,7 +326,13 @@ def getListOfReport(request):
       'status_id__abbr': o.status.abbr if o.status is not None else '',
       'userForControl_id': o.userForControl_id,
       'date': o.get_date_day()
-    })
+    }
+    if includeExtraFields:
+      dict = {}
+      for el in ExtraDataForDayData.objects.filter(data_id=o.id):
+        dict[el.name] = el.value
+      answer['extraFields'] = dict
+    resp.append(answer)
   return HttpResponse(json.dumps(resp))
 
 
@@ -334,7 +341,7 @@ def getExtraFieldsForStatus(request):
   day_data_id = data['day_data_id'] if 'day_data_id' in data else None
 
   resp = {}
-
-  for obj in ExtraDataForDayData.objects.filter(data_id=day_data_id):
-    resp[obj.name] = obj.value
+  if day_data_id is not None:
+    for obj in ExtraDataForDayData.objects.filter(data_id=day_data_id):
+      resp[obj.name] = obj.value
   return HttpResponse(json.dumps(resp))

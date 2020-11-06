@@ -133,7 +133,7 @@ class ExtraDataForDayData(models.Model):
   value = models.TextField(max_length=500, blank=True, null=True, verbose_name="Значение")
 
   def __str__(self):
-    return self.data.userForControl.name + str(self.date)
+    return self.data.userForControl.name
 
   class Meta:
     verbose_name = 'Дополнительное поле для статуса'

@@ -284,7 +284,7 @@ export default function MainPageForCenter({setShowBody}) {
             return
           }
           const month = currDate.getMonth() + 1 >= 10 ? currDate.getMonth() + 1 : '0' + (currDate.getMonth() + 1);
-          const day = Number(objectModal.date) >= 10 ? objectModal.date : '0' + objectModal.date;
+          const day = (String(objectModal.date)).length >= 2 ? objectModal.date : '0' + objectModal.date;
           objectModal.status_id = objectModal.extra_status_id ? objectModal.extra_status_id : objectModal.status_id;
           workWithServer.setOneReport({
             'data': objectModal,

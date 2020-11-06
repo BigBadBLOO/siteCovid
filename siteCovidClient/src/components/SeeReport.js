@@ -10,13 +10,19 @@ function makeTableData(mass) {
   return (
     mass.length > 0
       ? mass.map((el, index) => {
+        console.log(el);
         return (
           <div className="flex break-words">
             <p className="border p-1 inline-block" style={{width: "5%"}}>{index + 1}</p>
             <p className="border p-1 inline-block" style={{width: "12%"}}>{el.group_id__name}</p>
             <p className="border p-1 inline-block" style={{width: "13%"}}>{el.rank_id__name}</p>
             <p className="border p-1 inline-block w-3/12">{el.name}</p>
-            <p className="border p-1 inline-block w-6/12"> {el.comment}</p>
+            <p className="border p-1 inline-block w-6/12 text-left">
+              {el.comment}<br/>
+              {!!el.extraFields['t'] && ('Температура: ' + el.extraFields['t'])}<br/>
+              {(!!el.extraFields['test'] || !!el.extraFields['test_date']) && ('Тест на Covid: ' + el.extraFields['test'] + ' ' + el.extraFields['test_date'])}<br/>
+              {(!!el.extraFields['test_result'] || !!el.extraFields['test_result_date' ]) && ('Результат теста на Covid: ' + el.extraFields['test_result'] + ' ' + el.extraFields['test_result_date'])}
+            </p>
           </div>
         )
       })
@@ -44,7 +50,7 @@ function SeeReport({setShowBody, headerRef}) {
   const [listOfCity, setListOfCity] = useState([]);
 
   const getListOfReport = () => {
-    workWithServer.getListOfReport({'date': startDate}).then(data => {
+    workWithServer.getListOfReport({'date': startDate, 'includeExtraFields': true}).then(data => {
       setListOfPerson(prevState => prevState.map(el => {
         let index = data.filter(obj => obj.userForControl_id === el.id);
         if (index.length > 0) return {...el, ...index[0]};
@@ -185,7 +191,7 @@ function SeeReport({setShowBody, headerRef}) {
           в том числе:
         </p>
         <p className="font-bold text-center ">
-          Не ОРВИ {withNoInfectionAmb.length + withNoInfectionStat.length} - чел.
+          Не ОРВИ - {withNoInfectionAmb.length + withNoInfectionStat.length} чел.
           ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionStat.filter(el => el.is_military).length} в/сл,
           {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionStat.filter(el => !el.is_military).length} гп)
         </p>
@@ -197,7 +203,7 @@ function SeeReport({setShowBody, headerRef}) {
           {makeTableData(withNoInfectionAmb)}
         </div>
         <p className="font-bold text-center mt-8">
-          Пневмония {withPnevmoniaAmb.length + withPnevmoniaStat.length} - чел.
+          Пневмония - {withPnevmoniaAmb.length + withPnevmoniaStat.length} чел.
           ({withPnevmoniaAmb.filter(el => el.is_military).length + withPnevmoniaStat.filter(el => el.is_military).length} в/сл,
           {withPnevmoniaAmb.filter(el => !el.is_military).length + withPnevmoniaStat.filter(el => !el.is_military).length} гп)
         </p>
@@ -211,7 +217,7 @@ function SeeReport({setShowBody, headerRef}) {
 
         <p className="font-bold text-center mt-8">
           Острые респираторные вирусные инфекции (не коронавирусная
-          инфекция) {withRespiratornoStat.length + withRespiratornoAmb.length} - чел.
+          инфекция) - {withRespiratornoStat.length + withRespiratornoAmb.length} чел.
           ({withRespiratornoStat.filter(el => el.is_military).length + withRespiratornoAmb.filter(el => el.is_military).length} в/сл,
           {withRespiratornoStat.filter(el => !el.is_military).length + withRespiratornoAmb.filter(el => !el.is_military).length} гп)
         </p>
@@ -224,7 +230,7 @@ function SeeReport({setShowBody, headerRef}) {
         </div>
 
         <p className="font-bold text-center mt-8">
-          Число находящихся на карантине (изоляция) {withKarantin.length} - чел.
+          Число находящихся на карантине (изоляция) - {withKarantin.length} чел.
           ({withKarantin.filter(el => el.is_military).length} в/сл,
           {withKarantin.filter(el => !el.is_military).length} гп)
         </p>
