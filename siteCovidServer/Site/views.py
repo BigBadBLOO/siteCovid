@@ -184,7 +184,7 @@ def setListOfPerson(request):
 
 
 def getListOfStatus(request):
-  status = list(Status.objects.all().values())
+  status = list(Status.objects.order_by('name').values())
   return HttpResponse(json.dumps(status))
 
 
