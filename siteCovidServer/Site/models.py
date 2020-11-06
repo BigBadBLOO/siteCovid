@@ -99,7 +99,8 @@ class UserForControl(models.Model):
 class Status(models.Model):
     name = models.TextField(max_length=500, blank=True, verbose_name=" Название")
     abbr = models.TextField(max_length=500, blank=True, verbose_name=" Сокращение")
-    is_required = models.BooleanField(default=True, verbose_name="Обязательный комментарий")
+    parent = models.ForeignKey("self", models.SET_NULL, blank=True, null=True, verbose_name="Родитель")
+    with_extraField = models.BooleanField(default=False, verbose_name="Требуются дополнительные поля")
 
     def __str__(self):
         return self.name
@@ -112,7 +113,7 @@ class Status(models.Model):
 class DayData(models.Model):
     userForControl = models.ForeignKey(UserForControl, on_delete=models.CASCADE, verbose_name="Пользователь")
     status = models.ForeignKey(Status, models.SET_NULL, blank=True, null=True, verbose_name="Причина отсутствия")
-    comment = models.TextField(max_length=500, blank=True, verbose_name="Комментарий")
+    comment = models.TextField(blank=True, verbose_name="Комментарий")
     date = models.DateField(verbose_name='Дата')
 
     def __str__(self):
@@ -124,3 +125,16 @@ class DayData(models.Model):
     class Meta:
         verbose_name = 'л/с по дням'
         verbose_name_plural = 'л/с по дням'
+
+
+class ExtraDataForDayData(models.Model):
+  data = models.ForeignKey(DayData, on_delete=models.CASCADE, verbose_name="DayData")
+  name = models.TextField(max_length=500, blank=True,  null=True, verbose_name="Название")
+  value = models.TextField(max_length=500, blank=True, null=True, verbose_name="Значение")
+
+  def __str__(self):
+    return self.data.userForControl.name + str(self.date)
+
+  class Meta:
+    verbose_name = 'Дополнительное поле для статуса'
+    verbose_name_plural = 'Дополнительные поля для статуса'

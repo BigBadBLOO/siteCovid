@@ -16,9 +16,11 @@ urlpatterns = [
   url(r'^setListOfPerson/', setListOfPerson, name='setListOfPerson'),
 
   url(r'^getListOfStatus/', getListOfStatus, name='getListOfStatus'),
+
   url(r'^setListOfReport/', setListOfReport, name='setListOfReport'),
   url(r'^getListOfReport/', getListOfReport, name='getListOfReport'),
   url(r'^setOneReport/', setOneReport, name='setOneReport'),
+  url(r'^getExtraFieldsForStatus/', getExtraFieldsForStatus, name='getExtraFieldsForStatus'),
 
   url(r'^getListOfRank/', getListOfRank, name='getListOfRank'),
   url(r'^getListOfGroup/', getListOfGroup, name='getListOfGroup'),

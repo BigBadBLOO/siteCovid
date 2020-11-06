@@ -18,7 +18,7 @@ function Header({user, initUser, headerRef}) {
   return (
     <>
       <div ref={headerRef} className="p-3 border-b flex justify-between">
-        <div>
+        <div className="flex">
           <span className="my-auto p-2 border rounded border-blue-600">{user.username} - {user.group}</span>
           <a href={href_to_doc} className="my-auto p-2 no-underline hover:underline text-blue-500">Документация</a>
         </div>

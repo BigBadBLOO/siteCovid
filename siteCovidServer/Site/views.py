@@ -93,7 +93,6 @@ def getListOfPost(request):
   return HttpResponse(json.dumps(list(posts.values())))
 
 
-
 def setListOfPost(request):
   user = request.user
   data = json.loads(request.body)
@@ -111,7 +110,7 @@ def setListOfPost(request):
       post = UserPost.objects.create(
         name=elem['name'],
         group_id=group_id,
-        position = elem['position'],
+        position=elem['position'],
       )
     list_id.append(post.pk)
 
@@ -249,7 +248,7 @@ def setOneReport(request):
   report = data['data']
   date = data['date'] if 'date' in data else None
   date_end = data['date_end'].split('T')[0] if 'date_end' in data and data['date_end'] is not None else None
-
+  extraFields = data['extraFields'] if 'extraFields' in data else None
   comment = report['comment'] if 'comment' in report else ''
   status = Status.objects.filter(pk=report['status_id']).first() if 'status_id' in report else None
 
@@ -266,14 +265,24 @@ def setOneReport(request):
         status=status,
         userForControl_id=report['userForControl_id']
       )
+    if extraFields is not None:
+      ExtraDataForDayData.objects.filter(data_id=obj.id).delete()
+      for key in extraFields:
+        ExtraDataForDayData.objects.create(data=obj, name=key, value=extraFields[key])
   if date is not None and date_end is not None:
     date = date.split('-')
     date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
+    date_temp = date
     date_end = date_end.split('-')
     date_end = datetime.date(int(date_end[0]), int(date_end[1]), int(date_end[2]))
 
     while date_end >= date:
       obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
+      if date == date_temp:
+        if extraFields is not None:
+          ExtraDataForDayData.objects.filter(data_id=obj.id).delete()
+          for key in extraFields:
+            ExtraDataForDayData.objects.create(data=obj, name=key, value=extraFields[key])
       if obj is not None:
         obj.status = status
         obj.comment = comment
@@ -285,6 +294,7 @@ def setOneReport(request):
           status=status,
           userForControl_id=report['userForControl_id']
         )
+
       date = date + datetime.timedelta(days=1)
   return HttpResponse(json.dumps({'ok': True}))
 
@@ -308,6 +318,7 @@ def getListOfReport(request):
   resp = []
   for o in obj:
     resp.append({
+      'id': o.id,
       'comment': o.comment,
       'status_id': o.status_id,
       'status_id__name': o.status.name if o.status is not None else '',
@@ -315,4 +326,15 @@ def getListOfReport(request):
       'userForControl_id': o.userForControl_id,
       'date': o.get_date_day()
     })
+  return HttpResponse(json.dumps(resp))
+
+
+def getExtraFieldsForStatus(request):
+  data = json.loads(request.body)
+  day_data_id = data['day_data_id'] if 'day_data_id' in data else None
+
+  resp = {}
+
+  for obj in ExtraDataForDayData.objects.filter(data_id=day_data_id):
+    resp[obj.name] = obj.value
   return HttpResponse(json.dumps(resp))

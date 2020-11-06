@@ -63,7 +63,6 @@ function Home({user}) {
         {user['is_control']
           ? bodyForControl()
           : bodyForCentre()
-
         }
       </div>
       <Loader/>

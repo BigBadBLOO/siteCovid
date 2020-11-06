@@ -8,19 +8,14 @@ import DatePicker from "react-datepicker";
 
 export default function MainPageForCenter({setShowBody}) {
   const curr = new Date();
-  const [currDate, setCurrDate] = useState(curr);
-
   const firstDay = new Date(curr.getFullYear(), curr.getMonth(), 1, 5);
   const lastDay = new Date(curr.getFullYear(), curr.getMonth() + 1, 0, 5);
 
+  const [currDate, setCurrDate] = useState(curr);
   const [startDate, setStartDate] = useState(firstDay);
   const [endDate, setEndDate] = useState(lastDay);
-
-  const [endDateForModal, setEndDateForModal] = useState(null);
-
-  const [month, setMonth] = useState(currDate.getMonth());
-
   const [massWithDate, setMassWithDate] = useState([]);
+  const [endDateForModal, setEndDateForModal] = useState(null);
 
   const [listOfPerson, setListOfPerson] = useState([]);
   const [listOfReport, setListOfReport] = useState([]);
@@ -30,15 +25,54 @@ export default function MainPageForCenter({setShowBody}) {
   const [personModal, setPersonModal] = useState({});
   const [objectModal, setObjectModal] = useState({});
 
+  const [extraStatus, setExtraStatus] = useState([]);
+  const [extraFields, setExtraFields] = useState({});
+  const [showExtraFields, setShowExtraFields] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  const workWithExtraFields = status => setShowExtraFields(status ? status.with_extraField : false);
+
+  const workWithStatus = (el, extrafields) => {
+    setShowError(false);
+    const status = listStatus.find(status => status.id === el.status_id);
+    const children_status = status ? listStatus.filter(el => el.parent_id === status.id) : [];
+    workWithExtraFields(children_status.length > 0 ? children_status[0] : status);
+    setExtraStatus(children_status);
+
+    if (status && status.parent_id) {
+      el.extra_status_id = el.status_id;
+      el.status_id = status.parent_id;
+      setExtraStatus(listStatus.filter(el => el.parent_id === status.parent_id));
+      console.log(extraFields);
+      status.with_extraField && Object.keys(extrafields).length === 0 && setExtraFields({
+        'state': '', 't': '', 'test': ''
+      });
+    } else if (children_status.length > 0) {
+      el.extra_status_id = children_status[0].id;
+      el.status_id = status.id;
+      children_status[0].with_extraField && Object.keys(extrafields).length === 0 && setExtraFields({
+        'state': '', 't': '', 'test': ''
+      });
+    } else {
+      setExtraFields({});
+      el.extra_status_id = null
+    }
+    return el
+  };
 
   const modal = (person, obj, date) => {
     setPersonModal(person);
-    setObjectModal(obj.length > 0 ? obj[0] : {
+    let el = obj ? {...obj} : {
       'userForControl_id': person.id,
       'date': date
+    };
+    workWithServer.getExtraFieldsForStatus({'day_data_id': el.id}).then((data) => {
+      setExtraFields(data);
+      el = workWithStatus(el, data);
+      setObjectModal(el);
+      setShowError(false);
+      setShow(true);
     });
-    setShow(true);
   };
 
   useEffect(() => {
@@ -58,6 +92,7 @@ export default function MainPageForCenter({setShowBody}) {
     }
     setMassWithDate(tempMassWithDate)
   }, [startDate, endDate]);
+
   return (
     <div>
       <div>
@@ -70,13 +105,12 @@ export default function MainPageForCenter({setShowBody}) {
         {/*<Button className="" type='primary' text="Сформировать отчет" onClick={() => {*/}
         {/*  setShowBody('makeReport')*/}
         {/*}}/>*/}
-        <select className="rounded border border-blue-700 p-1 bg-white" value={month} onChange={e => {
+        <select className="rounded border border-blue-700 p-1 bg-white" value={currDate.getMonth()} onChange={e => {
           const curr = new Date();
           curr.setMonth(e.target.value);
           setCurrDate(curr);
           setStartDate(new Date(curr.getFullYear(), curr.getMonth(), 1, 5));
           setEndDate(new Date(curr.getFullYear(), curr.getMonth() + 1, 0, 5));
-          setMonth(e.target.value)
         }
         }>
           <option value={0}>Январь</option>
@@ -120,21 +154,21 @@ export default function MainPageForCenter({setShowBody}) {
               <td className="w-40 p-1 border">{el.rank_id__name}</td>
               <td className="w-56  p-1 border cursor-pointer">{el.name}</td>
               {massWithDate.map(date => {
-                const filter = listReportByPerson.filter(obj => Number(obj.date) === date.getDate() && !!obj.status_id);
+                const filter = listReportByPerson.find(obj => Number(obj.date) === date.getDate() && !!obj.status_id);
                 return <td className={clsx("p-1 border w-12 text-center align-middle text-red-500 cursor-pointer", {
                   'bg-blue-200 bg-opacity-25': date.getDay() === 0 || date.getDay() === 6,
                   'bg-red-200 bg-opacity-25': date.getDate() === curr.getDate(),
                 })} onClick={() => {
-                  setShowError(false);
                   modal(el, filter, date.getDate())
                 }}>
-                  {filter.length > 0 ? filter[0]['status_id__abbr'] ? filter[0]['status_id__abbr'] : '+' : ''}
+                  {filter ? filter['status_id__abbr'] ? filter['status_id__abbr'] : '+' : ''}
                 </td>
               })}
             </tr>
           })}
         </table>
       </div>
+
       <MyModal show={show} showModal={setShow}>
         <div className="border-b m-1 mb-4 p-2 flex">
           <span
@@ -145,20 +179,55 @@ export default function MainPageForCenter({setShowBody}) {
         <label>Выберите статус:</label>
         <select className="my-4 w-full h-full border-b border-blue-700 bg-white" value={objectModal.status_id}
                 onChange={(e) => {
-                  let comment = e.target.value ? objectModal.comment : '';
-                  setObjectModal({...objectModal, status_id: Number(e.target.value), comment: comment})
+                  const value = e.target.value;
+                  let comment = value ? objectModal.comment : '';
+                  const el = workWithStatus({...objectModal, status_id: Number(value), comment: comment}, extraFields);
+                  setObjectModal(el)
                 }}>
-          <option key={-1} value="">Сбросить статус</option>
-          {listStatus.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+          <option value="">Сбросить статус</option>
+          {listStatus.filter(el => !el.parent_id).map(el => <option key={el.id} value={el.id} onClick={(obj) => {
+            setExtraStatus(listStatus.filter(el => el.parent_id === obj.id))
+          }}>{el.name}</option>)}
         </select>
+        {extraStatus.length > 0 && <>
+          <label>Выберите доп статус:</label>
+          <select className="my-4 w-full h-full border-b border-blue-700 bg-white" value={objectModal.extra_status_id}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const el = workWithStatus({...objectModal, status_id: Number(value)}, extraFields);
+                    setObjectModal(el)
+                  }}>
+            {extraStatus.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+          </select>
+        </>}
         <label>Комментарий</label>
         <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
                   value={objectModal.comment}
                   placeholder="Оставьте комментарий..." onChange={(e) => {
-          setShowError(false);
           setObjectModal({...objectModal, comment: e.target.value})
         }}/>
-        {showError && <p className="text-red-500 text-center">Вам необходимо заполнить комментарий</p>}
+        {showExtraFields && <>
+          <label>Состояние на данный момент</label>
+          <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
+                    value={extraFields.state}
+                    placeholder="Состояние на данный момент..." onChange={(e) => {
+            setShowError(false);
+            setExtraFields({...extraFields, state: e.target.value})
+          }}/>
+          <label>Температура тела</label>
+          <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
+                    value={extraFields.t} placeholder="Температура тела..." onChange={(e) => {
+            setShowError(false);
+            setExtraFields({...extraFields, t: e.target.value})
+          }}/>
+          <label>Тест на Covid</label>
+          <textarea className="my-4 p-1 w-full border border-blue-700 bg-white rounded outline-none"
+                    value={extraFields.test} placeholder="Тест на Covid..." onChange={(e) => {
+            setShowError(false);
+            setExtraFields({...extraFields, test: e.target.value})
+          }}/>
+        </>}
+        {showError && <p className="text-red-500 text-center">Вам необходимо заполнить все поля</p>}
         <p className="">По какое число:</p>
         <DatePicker
           className="rounded border border-blue-700 p-1 w-full"
@@ -171,20 +240,19 @@ export default function MainPageForCenter({setShowBody}) {
           minDate={new Date(currDate.getFullYear(), currDate.getMonth(), objectModal.date)}
         />
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
-          if (objectModal.status_id) {
-            let status = listStatus.filter(el => el.id === objectModal.status_id);
-            status = status.length > 0 ? status[0] : {};
-            if (status.is_required && !objectModal.comment) {
-              setShowError(true);
-              return;
-            }
+          const listWithError = Object.values(extraFields).filter(el => !el);
+          if (listWithError.length > 0) {
+            setShowError(true);
+            return
           }
           const month = currDate.getMonth() + 1 >= 10 ? currDate.getMonth() + 1 : '0' + (currDate.getMonth() + 1);
           const day = objectModal.date.length >= 2 ? objectModal.date : '0' + objectModal.date;
+          objectModal.status_id = objectModal.extra_status_id ? objectModal.extra_status_id : objectModal.status_id;
           workWithServer.setOneReport({
             'data': objectModal,
             'date': `${currDate.getFullYear()}-${month}-${day}`,
-            'date_end': endDateForModal
+            'date_end': endDateForModal,
+            'extraFields': extraFields
           }).then(() => {
             workWithServer.getListOfReport({'date_begin': startDate, 'date_end': endDate}).then(data => {
               setListOfReport(data)

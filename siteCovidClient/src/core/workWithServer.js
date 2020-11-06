@@ -35,6 +35,9 @@ const workWithServer = () => {
     getListOfReport: (data) => {
       return requestPost('/getListOfReport/', data)
     },
+    getExtraFieldsForStatus: (data) => {
+      return requestPost('/getExtraFieldsForStatus/', data)
+    },
     getListOfRank: (data) => {
       return requestPost('/getListOfRank/', data)
     },
@@ -84,14 +87,14 @@ async function requestPost(url, data) {
 function getCookie(name) {
   let matches = document.cookie.match(new RegExp(
     "(?:^|; )" + name.replace(/([.$?*|{}()[]\/+^])/g, '\\$1') + "=([^;]*)"
-  ))
+  ));
   return matches ? decodeURIComponent(matches[1]) : undefined
 }
 
 const setCookie = (name, value, props = {'Path': '/', maxAge: 1800}) => {
-  let exp = props.expires
+  let exp = props.expires;
   if (typeof exp == "number" && exp) {
-    let d = new Date()
+    let d = new Date();
     d.setTime(d.getTime() + exp * 1000)
     exp = props.expires = d
   }
