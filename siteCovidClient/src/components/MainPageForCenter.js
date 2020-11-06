@@ -213,6 +213,20 @@ export default function MainPageForCenter({setShowBody}) {
             setShowError(false);
             setExtraFields({...extraFields, t: e.target.value})
           }}/>
+        </>}
+
+        <p className="my-2">По какое число:</p>
+        <DatePicker
+          className="rounded border border-blue-700 p-1 w-full"
+          selected={endDateForModal}
+          onChange={date => setEndDateForModal(new Date(date.setHours(5)))}
+          dateFormat="dd.MM.yyyy"
+          customInput={<InputForDatePicker/>}
+          isClearable
+          placeholderText="По какое число..."
+          minDate={new Date(currDate.getFullYear(), currDate.getMonth(), objectModal.date)}
+        />
+        {showExtraFields && <>
           <p className="my-2">Тест на Covid</p>
           <div className="flex">
             <DatePicker
@@ -262,17 +276,7 @@ export default function MainPageForCenter({setShowBody}) {
                   placeholder="Оставьте комментарий..." onChange={(e) => {
           setObjectModal({...objectModal, comment: e.target.value})
         }}/>
-        <p className="">По какое число:</p>
-        <DatePicker
-          className="rounded border border-blue-700 p-1 w-full"
-          selected={endDateForModal}
-          onChange={date => setEndDateForModal(new Date(date.setHours(5)))}
-          dateFormat="dd.MM.yyyy"
-          customInput={<InputForDatePicker/>}
-          isClearable
-          placeholderText="По какое число..."
-          minDate={new Date(currDate.getFullYear(), currDate.getMonth(), objectModal.date)}
-        />
+
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
           console.log(extraFields);
           if (('t' in extraFields && !extraFields.t) || ((!!extraFields.test || !!extraFields.test_date) && (!extraFields.test_result || !extraFields.test_result_date))) {
