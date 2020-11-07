@@ -10,7 +10,6 @@ function makeTableData(mass) {
   return (
     mass.length > 0
       ? mass.map((el, index) => {
-        console.log(el);
         return (
           <div className="flex break-words">
             <p className="border p-1 inline-block" style={{width: "5%"}}>{index + 1}</p>
@@ -18,10 +17,10 @@ function makeTableData(mass) {
             <p className="border p-1 inline-block" style={{width: "13%"}}>{el.rank_id__name}</p>
             <p className="border p-1 inline-block w-3/12">{el.name}</p>
             <p className="border p-1 inline-block w-6/12 text-left">
-              {el.comment}<br/>
-              {!!el.extraFields['t'] && ('Температура: ' + el.extraFields['t'])}<br/>
-              {(!!el.extraFields['test'] || !!el.extraFields['test_date']) && ('Тест на Covid: ' + el.extraFields['test'] + ' ' + el.extraFields['test_date'])}<br/>
-              {(!!el.extraFields['test_result'] || !!el.extraFields['test_result_date' ]) && ('Результат теста на Covid: ' + el.extraFields['test_result'] + ' ' + el.extraFields['test_result_date'])}
+              {el.comment}
+              {!!el.extraFields['t'] && <><br/>{'Температура: ' + el.extraFields['t']}</>}
+              {(!!el.extraFields['test'] || !!el.extraFields['test_date']) && <><br/>{'Тест на Covid: ' + el.extraFields['test'] + ' ' + el.extraFields['test_date']}</>}
+              {(!!el.extraFields['test_result'] || !!el.extraFields['test_result_date']) && <><br/>{'Результат теста на Covid: ' + el.extraFields['test_result'] + ' ' + el.extraFields['test_result_date']}</>}
             </p>
           </div>
         )
@@ -42,13 +41,33 @@ function makeTableHeader() {
   )
 }
 
+function repeatBlock(block, count) {
+  const mass = [];
+  let i = 0;
+  while (i < count) {
+    mass.push(block);
+    i++
+  }
+  return <>
+    {mass}
+  </>
+}
+
+function filterBlock(mass) {
+  return <>
+    <td className="border p-1">{mass.filter(el => el.is_military).length}</td>
+    <td className="border p-1">{mass.filter(el => !el.is_military).length}</td>
+    <td className="border p-1">{mass.length}</td>
+  </>
+}
+
 function SeeReport({setShowBody, headerRef}) {
   const [startDate, setStartDate] = useState(new Date());
   const printRef = createRef();
 
   const [listOfPerson, setListOfPerson] = useState([]);
   const [listOfCity, setListOfCity] = useState([]);
-
+  const [listOfGroup, setListOfGroup] = useState([]);
   const getListOfReport = () => {
     workWithServer.getListOfReport({'date': startDate, 'includeExtraFields': true}).then(data => {
       setListOfPerson(prevState => prevState.map(el => {
@@ -67,6 +86,7 @@ function SeeReport({setShowBody, headerRef}) {
       getListOfReport();
     });
     workWithServer.getListOfCity().then(setListOfCity);
+    workWithServer.getListOfGroup().then(setListOfGroup)
   }, []);
 
   useEffect(() => {
@@ -150,8 +170,8 @@ function SeeReport({setShowBody, headerRef}) {
             <p className="border p-1 inline-block" style={{width: '12.5%'}}>Гр. персонал</p>
             <p className="border p-1 inline-block" style={{width: '12.5%'}}>Covid</p>
             <p className="border p-1 inline-block" style={{width: '12.5%'}}>ОРВ</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Другое</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Самоизоляция</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Другое<br/>заболевание</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Самоизоляция<br/>Карантин</p>
             <p className="border p-1 inline-block" style={{width: '12.5%'}}>Удаленная работа</p>
           </div>
           {listOfCity.map(el => {
@@ -165,14 +185,14 @@ function SeeReport({setShowBody, headerRef}) {
                   {onWorkPeople.filter(obj => obj.city_id === el.id).length}
                 </span>
                 <span className="border p-1 inline-block" style={{width: '12.5%'}}>
-                  {withCovidStat.filter(obj => obj.city_id === el.id).length + withCovidAmb.filter(obj => obj.city_id === el.id).length}
+                  {withCovidStat.filter(obj => obj.city_id === el.id).length + withCovidAmb.filter(obj => obj.city_id === el.id).length +
+                  withPnevmoniaAmb.filter(obj => obj.city_id === el.id).length + withPnevmoniaStat.filter(obj => obj.city_id === el.id).length}
                 </span>
                 <span className="border p-1 inline-block" style={{width: '12.5%'}}>
                   {withRespiratornoAmb.filter(obj => obj.city_id === el.id).length + withRespiratornoStat.filter(obj => obj.city_id === el.id).length}
                 </span>
                 <span className="border p-1 inline-block" style={{width: '12.5%'}}>
-                  {withNoInfectionAmb.filter(obj => obj.city_id === el.id).length + withNoInfectionStat.filter(obj => obj.city_id === el.id).length +
-                  withPnevmoniaAmb.filter(obj => obj.city_id === el.id).length + withPnevmoniaStat.filter(obj => obj.city_id === el.id).length}
+                  {withNoInfectionAmb.filter(obj => obj.city_id === el.id).length + withNoInfectionStat.filter(obj => obj.city_id === el.id).length}
                 </span>
                 <span className="border p-1 inline-block" style={{width: '12.5%'}}>
                   {withKarantin.filter(obj => obj.city_id === el.id).length}
@@ -186,7 +206,53 @@ function SeeReport({setShowBody, headerRef}) {
         </div>
 
         <p className="mt-2">
-          <b>2. Число заболевших:</b><br/>
+          <b>2. Число заболевших:</b>
+        </p>
+
+        <table className="mt-1 text-center text-xs break-words w-full">
+          <tr>
+            <td rowSpan={2} className="border p-1 w-1/6">Подразделения</td>
+            <td colSpan={3} className="border p-1 w-1/6">Covid</td>
+            <td colSpan={3} className="border p-1 w-1/6">ОРВ</td>
+            <td colSpan={3} className="border p-1 w-1/6">Другое заболевание</td>
+            <td colSpan={3} className="border p-1 w-1/6">Самоизоляция карантин</td>
+            <td colSpan={3} className="border p-1 w-1/6">Удаленная работа</td>
+          </tr>
+          <tr>
+            {repeatBlock(<>
+              <td className="border p-1">Всл.</td>
+              <td className="border p-1">ГП</td>
+              <td className="border p-1">Итого</td>
+            </>, 5)}
+          </tr>
+          {listOfGroup.map(el => {
+            const withCovid = [...withCovidAmb.filter(person => person.group_id__name === el.name),
+              ...withCovidStat.filter(person => person.group_id__name === el.name)];
+            const withOrv = [...withRespiratornoAmb.filter(person => person.group_id__name === el.name),
+              ...withRespiratornoStat.filter(person => person.group_id__name === el.name),
+              ...withPnevmoniaAmb.filter(person => person.group_id__name === el.name),
+              ...withPnevmoniaStat.filter(person => person.group_id__name === el.name)];
+            const withOther = [...withNoInfectionAmb.filter(person => person.group_id__name === el.name),
+              ...withNoInfectionStat.filter(person => person.group_id__name === el.name)];
+            const karantin = [...withKarantin.filter(person => person.group_id__name === el.name)];
+            const remoteWork = [...onRemoteWork.filter(person => person.group_id__name === el.name)];
+            return (
+              <tr>
+                <td className="border p-1">{el.name}</td>
+                {filterBlock(withCovid)}
+                {filterBlock(withOrv)}
+                {filterBlock(withOther)}
+                {filterBlock(karantin)}
+                {filterBlock(remoteWork)}
+              </tr>
+            )
+          })}
+          <tr>
+
+          </tr>
+        </table>
+
+        <p className="mt-2">
           Всего - <b>{withDisease.length}</b> <br/>
           в том числе:
         </p>

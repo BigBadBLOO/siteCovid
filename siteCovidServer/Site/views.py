@@ -252,49 +252,33 @@ def setOneReport(request):
   comment = report['comment'] if 'comment' in report else ''
   status = Status.objects.filter(pk=report['status_id']).first() if 'status_id' in report else None
 
-  if date is not None and date_end is None:
-    obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
-    if obj is not None:
-      obj.status = status
-      obj.comment = comment
-      obj.save()
-    else:
-      obj = DayData.objects.create(
-        date=date,
-        comment=comment,
-        status=status,
-        userForControl_id=report['userForControl_id']
-      )
-    if extraFields is not None:
-      ExtraDataForDayData.objects.filter(data_id=obj.id).delete()
-      for key in extraFields:
-        ExtraDataForDayData.objects.create(data=obj, name=key, value=extraFields[key])
-  if date is not None and date_end is not None:
+  if date is not None:
     date = date.split('-')
     date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
     date_temp = date
-    date_end = date_end.split('-')
-    date_end = datetime.date(int(date_end[0]), int(date_end[1]), int(date_end[2]))
-
+    if date_end is not None:
+      date_end = date_end.split('-')
+      date_end = datetime.date(int(date_end[0]), int(date_end[1]), int(date_end[2]))
+    else:
+      date_end = date
     while date_end >= date:
       obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
-      if date == date_temp and obj is not None:
+      if obj is not None:
+        obj.status = status
+        obj.save()
+      else:
+        obj = DayData.objects.create(
+          date=date,
+          status=status,
+          userForControl_id=report['userForControl_id']
+        )
+      if date == date_temp:
+        obj.comment = comment
+        obj.save()
         if extraFields is not None:
           ExtraDataForDayData.objects.filter(data_id=obj.id).delete()
           for key in extraFields:
             ExtraDataForDayData.objects.create(data=obj, name=key, value=extraFields[key])
-      if obj is not None:
-        obj.status = status
-        obj.comment = comment
-        obj.save()
-      else:
-        DayData.objects.create(
-          date=date,
-          comment=comment,
-          status=status,
-          userForControl_id=report['userForControl_id']
-        )
-
       date = date + datetime.timedelta(days=1)
   return HttpResponse(json.dumps({'ok': True}))
 

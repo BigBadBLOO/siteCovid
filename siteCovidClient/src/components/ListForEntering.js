@@ -18,10 +18,10 @@ function ListForEntering({headerRef, setShowBody}) {
   const getListOfReport = () => {
     workWithServer.getListOfReport({'date': startDate}).then(data => {
       setListOfPerson(prevState => prevState.map(el => {
-        let index = data.filter(obj => obj.userForControl_id === el.id);
-        if (index.length > 0) return {...el, ...index[0]};
+        let index = data.find(obj => obj.userForControl_id === el.id);
         delete el['comment'];
         delete el['status_id'];
+        if (typeof index === 'object') return {...el, ...index};
         return el
       }))
     })
@@ -33,7 +33,6 @@ function ListForEntering({headerRef, setShowBody}) {
       setListOfPerson(data);
       getListOfReport();
     });
-
   }, []);
 
   useEffect(() => {
