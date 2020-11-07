@@ -21,7 +21,8 @@ function ListForEntering({headerRef, setShowBody}) {
         let index = data.find(obj => obj.userForControl_id === el.id);
         delete el['comment'];
         delete el['status_id'];
-        if (typeof index === 'object') return {...el, ...index};
+        delete el['status_id__name'];
+        if (typeof index === 'object') return { ...index,...el};
         return el
       }))
     })

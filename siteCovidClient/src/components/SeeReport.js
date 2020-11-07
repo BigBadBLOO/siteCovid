@@ -19,8 +19,10 @@ function makeTableData(mass) {
             <p className="border p-1 inline-block w-6/12 text-left">
               {el.comment}
               {!!el.extraFields['t'] && <><br/>{'Температура: ' + el.extraFields['t']}</>}
-              {(!!el.extraFields['test'] || !!el.extraFields['test_date']) && <><br/>{'Тест на Covid: ' + el.extraFields['test'] + ' ' + el.extraFields['test_date']}</>}
-              {(!!el.extraFields['test_result'] || !!el.extraFields['test_result_date']) && <><br/>{'Результат теста на Covid: ' + el.extraFields['test_result'] + ' ' + el.extraFields['test_result_date']}</>}
+              {(!!el.extraFields['test'] || !!el.extraFields['test_date']) && <>
+                <br/>{'Тест на Covid: ' + el.extraFields['test'] + ' ' + el.extraFields['test_date']}</>}
+              {(!!el.extraFields['test_result'] || !!el.extraFields['test_result_date']) && <>
+                <br/>{'Результат теста на Covid: ' + el.extraFields['test_result'] + ' ' + el.extraFields['test_result_date']}</>}
             </p>
           </div>
         )
@@ -203,6 +205,22 @@ function SeeReport({setShowBody, headerRef}) {
               </div>
             )
           })}
+          <div className="flex">
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Итого</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{onWorkMilitary.length}</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{onWorkPeople.length}</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>
+              {withCovidStat.length + withCovidAmb.length + withPnevmoniaAmb.length + withPnevmoniaStat.length}
+            </p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>
+              {withRespiratornoAmb.length + withRespiratornoStat.length}
+            </p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>
+              {withNoInfectionAmb.length + withNoInfectionStat.length}
+            </p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{withKarantin.length}</p>
+            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{onRemoteWork.length}</p>
+          </div>
         </div>
 
         <p className="mt-2">
@@ -248,7 +266,13 @@ function SeeReport({setShowBody, headerRef}) {
             )
           })}
           <tr>
-
+            <td className="border p-1">Итого</td>
+            {filterBlock([...withCovidAmb,...withCovidStat])}
+            {filterBlock([...withRespiratornoAmb,...withRespiratornoStat,
+              ...withPnevmoniaAmb, ...withPnevmoniaStat])}
+            {filterBlock([...withNoInfectionAmb,...withNoInfectionStat])}
+            {filterBlock(withKarantin)}
+            {filterBlock(onRemoteWork)}
           </tr>
         </table>
 
