@@ -324,7 +324,7 @@ def getListOfReport(request):
         listOfDaysDataId = DayData.objects.filter(date__gte=dictFields['fromDiseaseDate']).filter(
           userForControl_id=o.userForControl_id).values_list('id', flat=True)
         for field in ExtraDataForDayData.objects.filter(data_id__in=listOfDaysDataId).exclude(
-          name='fromDiseaseDate').values('data_id', 'name', 'value', 'data_id__date'):
+          name='fromDiseaseDate').values('data_id', 'name', 'value', 'data_id__date').order_by('data_id__date'):
           temp = listGrouped[field['data_id']] if field['data_id'] in listGrouped is not None else {}
           listGrouped[field['data_id']] = dict(temp, **{
             field['name']: field['value'],
