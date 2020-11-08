@@ -18,11 +18,25 @@ function makeTableData(mass) {
             <p className="border p-1 inline-block w-3/12">{el.name}</p>
             <p className="border p-1 inline-block w-6/12 text-left">
               {el.comment}
-              {!!el.extraFields['t'] && <><br/>{'Температура: ' + el.extraFields['t']}</>}
-              {(!!el.extraFields['test'] || !!el.extraFields['test_date']) && <>
-                <br/>{'Тест на Covid: ' + el.extraFields['test'] + ' ' + el.extraFields['test_date']}</>}
-              {(!!el.extraFields['test_result'] || !!el.extraFields['test_result_date']) && <>
-                <br/>{'Результат теста на Covid: ' + el.extraFields['test_result'] + ' ' + el.extraFields['test_result_date']}</>}
+              {
+                !!el.extraFields && el.extraFields.map(dict => {
+                  return <>
+                    {!!dict['date'] ? <p className="font-bold">{'Дата: ' + dict['date']}</p> : ''}
+                    {!!dict['t'] ? <p>{'Температура: ' + dict['t']}</p> : ''}
+                    {(!!dict['test'] || !!dict['test_date']) ?
+                    <p>
+                      {'Тест на Covid: ' + (!!dict['test'] ? dict['test'] : '') +
+                      (!!dict['test_date'] ? ' ' + dict['test_date'] : '')}
+                    </p> : ''}
+                    {(!!dict['test_result'] || !!dict['test_result_date']) ?
+                    <p>
+                      {'Результат теста на Covid: ' + (!!dict['test_result'] ? dict['test_result'] : '') +
+                      (!!dict['test_result_date'] ? ' ' + dict['test_result_date'] : '')}
+                    </p> : ''}
+                  </>
+                })
+              }
+
             </p>
           </div>
         )
@@ -91,10 +105,9 @@ function SeeReport({setShowBody, headerRef}) {
     workWithServer.getListOfGroup().then(setListOfGroup)
   }, []);
 
-  useEffect(() => {
-    getListOfReport();
-  }, [startDate]);
-
+  // useEffect(() => {
+  //   getListOfReport();
+  // }, [startDate]);
   const onWorkAll = listOfPerson.filter(el => !el.status_id);
   const onWorkMilitary = onWorkAll.filter(el => el.is_military);
   const onWorkPeople = onWorkAll.filter(el => el.is_military === false);
@@ -267,10 +280,10 @@ function SeeReport({setShowBody, headerRef}) {
           })}
           <tr>
             <td className="border p-1">Итого</td>
-            {filterBlock([...withCovidAmb,...withCovidStat])}
-            {filterBlock([...withRespiratornoAmb,...withRespiratornoStat,
+            {filterBlock([...withCovidAmb, ...withCovidStat])}
+            {filterBlock([...withRespiratornoAmb, ...withRespiratornoStat,
               ...withPnevmoniaAmb, ...withPnevmoniaStat])}
-            {filterBlock([...withNoInfectionAmb,...withNoInfectionStat])}
+            {filterBlock([...withNoInfectionAmb, ...withNoInfectionStat])}
             {filterBlock(withKarantin)}
             {filterBlock(onRemoteWork)}
           </tr>

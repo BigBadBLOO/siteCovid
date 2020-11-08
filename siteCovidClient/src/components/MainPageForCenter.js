@@ -44,7 +44,6 @@ export default function MainPageForCenter({setShowBody}) {
       el.extra_status_id = el.status_id;
       el.status_id = status.parent_id;
       setExtraStatus(listStatus.filter(el => el.parent_id === status.parent_id));
-      console.log(extraFields);
       status.with_extraField ? Object.keys(extrafields).length === 0 && setExtraFields({
         't': ''
       }) : setExtraFields({});
@@ -278,8 +277,7 @@ export default function MainPageForCenter({setShowBody}) {
         }}/>
 
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
-          console.log(extraFields);
-          if (('t' in extraFields && !extraFields.t) || ((!!extraFields.test || !!extraFields.test_date) && (!extraFields.test_result || !extraFields.test_result_date))) {
+          if (('t' in extraFields && !extraFields.t) || ((!!extraFields.test || !!extraFields.test_date) && ('test_result_date' in extraFields && !extraFields.test_result))) {
             setShowError(true);
             return
           }

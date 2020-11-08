@@ -261,6 +261,7 @@ def setOneReport(request):
       date_end = datetime.date(int(date_end[0]), int(date_end[1]), int(date_end[2]))
     else:
       date_end = date
+
     while date_end >= date:
       obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
       if obj is not None:
@@ -272,6 +273,8 @@ def setOneReport(request):
           status=status,
           userForControl_id=report['userForControl_id']
         )
+      if date != date_temp:
+        ExtraDataForDayData.objects.create(data=obj, name='fromDiseaseDate', value=date_temp.strftime("%Y-%m-%d"))
       if date == date_temp:
         obj.comment = comment
         obj.save()
@@ -312,11 +315,25 @@ def getListOfReport(request):
       'date': o.get_date_day()
     }
     if includeExtraFields:
-      dict = {}
+      dictFields = {}
       for el in ExtraDataForDayData.objects.filter(data_id=o.id):
-        dict[el.name] = el.value
-      answer['extraFields'] = dict
+        dictFields[el.name] = el.value
+      answer['extraFields'] = [dictFields]
+      if 'fromDiseaseDate' in dictFields:
+        listGrouped = {}
+        listOfDaysDataId = DayData.objects.filter(date__gte=dictFields['fromDiseaseDate']).filter(
+          userForControl_id=o.userForControl_id).values_list('id', flat=True)
+        for field in ExtraDataForDayData.objects.filter(data_id__in=listOfDaysDataId).exclude(
+          name='fromDiseaseDate').values('data_id', 'name', 'value', 'data_id__date'):
+          temp = listGrouped[field['data_id']] if field['data_id'] in listGrouped is not None else {}
+          listGrouped[field['data_id']] = dict(temp, **{
+            field['name']: field['value'],
+            'date': (field['data_id__date']).strftime("%d.%m.%Y")
+          })
+
+        answer['extraFields'] = list(listGrouped.values())
     resp.append(answer)
+  print(resp)
   return HttpResponse(json.dumps(resp))
 
 
