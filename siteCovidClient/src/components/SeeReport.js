@@ -24,15 +24,15 @@ function makeTableData(mass) {
                     {!!dict['date'] ? <p className="font-bold">{'Дата: ' + dict['date']}</p> : ''}
                     {!!dict['t'] ? <p>{'Температура: ' + dict['t']}</p> : ''}
                     {(!!dict['test'] || !!dict['test_date']) ?
-                    <p>
-                      {'Тест на Covid: ' + (!!dict['test'] ? dict['test'] : '') +
-                      (!!dict['test_date'] ? ' ' + dict['test_date'] : '')}
-                    </p> : ''}
+                      <p>
+                        {'Тест на Covid: ' + (!!dict['test'] ? dict['test'] : '') +
+                        (!!dict['test_date'] ? ' ' + dict['test_date'] : '')}
+                      </p> : ''}
                     {(!!dict['test_result'] || !!dict['test_result_date']) ?
-                    <p>
-                      {'Результат теста на Covid: ' + (!!dict['test_result'] ? dict['test_result'] : '') +
-                      (!!dict['test_result_date'] ? ' ' + dict['test_result_date'] : '')}
-                    </p> : ''}
+                      <p>
+                        {'Результат теста на Covid: ' + (!!dict['test_result'] ? dict['test_result'] : '') +
+                        (!!dict['test_result_date'] ? ' ' + dict['test_result_date'] : '')}
+                      </p> : ''}
                   </>
                 })
               }
@@ -130,6 +130,8 @@ function SeeReport({setShowBody, headerRef}) {
 
   const withKarantin = withDisease.filter(el => el.status_id__name === 'Карантин');
 
+  const with65 = withDisease.filter(el => el.status_id__name === '65+');
+
   const withCovidAmb = withDisease.filter(el => el.status_id__name === 'Коронавирус, амбулаторно');
   const withCovidStat = withDisease.filter(el => el.status_id__name === 'Коронавирус, стационарно');
 
@@ -178,63 +180,69 @@ function SeeReport({setShowBody, headerRef}) {
           гражданские - <b>{onWorkPeople.length}</b> чел., из них женщин с детьми до 14 лет
           - {onWorkPeopleWithChildren.length} чел.
         </p>
-        <div className="mt-1 text-center text-xs break-words">
-          <div className="flex">
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>ППД</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Военнослужащие</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Гр. персонал</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Covid</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>ОРВ</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Другое<br/>заболевание</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Самоизоляция<br/>Карантин</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Удаленная работа</p>
-          </div>
+        <table className="mt-1 text-center text-xs break-words w-full">
+          <tr className="">
+            <td rowSpan={2} className="border p-1">ППД</td>
+            <td rowSpan={2} className="border p-1">Военнослужащие</td>
+            <td rowSpan={2} className="border p-1">Гр. персонал</td>
+            <td rowSpan={2} className="border p-1">Covid</td>
+            <td colSpan={2} className="border p-1">Инфекционные заболевания</td>
+            <td rowSpan={2} className="border p-1">Неинфекционные (другие) заболевания</td>
+            <td rowSpan={2} className="border p-1">Карантин</td>
+            <td rowSpan={2} className="border p-1">65+</td>
+            <td rowSpan={2} className="border p-1">Удаленная работа</td>
+          </tr>
+          <tr>
+            <td className="border p-1">Пневмония</td>
+            <td className="border p-1">ОРВ</td>
+          </tr>
           {listOfCity.map(el => {
             return (
-              <div className="flex">
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>{el.name}</span>
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+              <tr>
+                <td className="border p-1">{el.name}</td>
+                <td className="border p-1">
                   {onWorkMilitary.filter(obj => obj.city_id === el.id).length}
-                </span>
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                </td>
+                <td className="border p-1">
                   {onWorkPeople.filter(obj => obj.city_id === el.id).length}
-                </span>
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
-                  {withCovidStat.filter(obj => obj.city_id === el.id).length + withCovidAmb.filter(obj => obj.city_id === el.id).length +
-                  withPnevmoniaAmb.filter(obj => obj.city_id === el.id).length + withPnevmoniaStat.filter(obj => obj.city_id === el.id).length}
-                </span>
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                </td>
+                <td className="border p-1">
+                  {withCovidStat.filter(obj => obj.city_id === el.id).length + withCovidAmb.filter(obj => obj.city_id === el.id).length}
+                </td>
+                <td className="border p-1">
+                  {withPnevmoniaAmb.filter(obj => obj.city_id === el.id).length + withPnevmoniaStat.filter(obj => obj.city_id === el.id).length}
+                </td>
+                <td className="border p-1">
                   {withRespiratornoAmb.filter(obj => obj.city_id === el.id).length + withRespiratornoStat.filter(obj => obj.city_id === el.id).length}
-                </span>
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                </td>
+                <td className="border p-1">
                   {withNoInfectionAmb.filter(obj => obj.city_id === el.id).length + withNoInfectionStat.filter(obj => obj.city_id === el.id).length}
-                </span>
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                </td>
+                <td className="border p-1">
                   {withKarantin.filter(obj => obj.city_id === el.id).length}
-                </span>
-                <span className="border p-1 inline-block" style={{width: '12.5%'}}>
+                </td>
+                <td className="border p-1">
+                  {with65.filter(obj => obj.city_id === el.id).length}
+                </td>
+                <td className="border p-1">
                   {onRemoteWork.filter(obj => obj.city_id === el.id).length}
-                </span>
-              </div>
+                </td>
+              </tr>
             )
           })}
-          <div className="flex">
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>Итого</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{onWorkMilitary.length}</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{onWorkPeople.length}</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>
-              {withCovidStat.length + withCovidAmb.length + withPnevmoniaAmb.length + withPnevmoniaStat.length}
-            </p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>
-              {withRespiratornoAmb.length + withRespiratornoStat.length}
-            </p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>
-              {withNoInfectionAmb.length + withNoInfectionStat.length}
-            </p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{withKarantin.length}</p>
-            <p className="border p-1 inline-block" style={{width: '12.5%'}}>{onRemoteWork.length}</p>
-          </div>
-        </div>
+          <tr>
+            <td className="border p-1">Итого</td>
+            <td className="border p-1">{onWorkMilitary.length}</td>
+            <td className="border p-1">{onWorkPeople.length}</td>
+            <td className="border p-1">{withCovidStat.length + withCovidAmb.length}</td>
+            <td className="border p-1">{withPnevmoniaAmb.length + withPnevmoniaStat.length}</td>
+            <td className="border p-1">{withRespiratornoAmb.length + withRespiratornoStat.length}</td>
+            <td className="border p-1">{withNoInfectionAmb.length + withNoInfectionStat.length}</td>
+            <td className="border p-1">{withKarantin.length}</td>
+            <td className="border p-1">{with65.length}</td>
+            <td className="border p-1">{onRemoteWork.length}</td>
+          </tr>
+        </table>
 
         <p className="mt-2">
           <b>2. Число заболевших:</b>
@@ -242,12 +250,15 @@ function SeeReport({setShowBody, headerRef}) {
 
         <table className="mt-1 text-center text-xs break-words w-full">
           <tr>
-            <td rowSpan={2} className="border p-1 w-1/6">Подразделения</td>
-            <td colSpan={3} className="border p-1 w-1/6">Covid</td>
-            <td colSpan={3} className="border p-1 w-1/6">ОРВ</td>
-            <td colSpan={3} className="border p-1 w-1/6">Другое заболевание</td>
-            <td colSpan={3} className="border p-1 w-1/6">Самоизоляция карантин</td>
-            <td colSpan={3} className="border p-1 w-1/6">Удаленная работа</td>
+            <td rowSpan={3} className="border p-1 w-1/6">Подразделения</td>
+            <td rowSpan={2} colSpan={3} className="border p-1 w-1/6">Covid</td>
+            <td colSpan={6} className="border p-1 w-1/6">Инфекционные заболевания</td>
+            <td rowSpan={2} colSpan={3} className="border p-1 w-1/6">Неинфекционные (другие) заболевания</td>
+            <td rowSpan={2} colSpan={3} className="border p-1 w-1/6">Карантин</td>
+          </tr>
+          <tr>
+            <td colSpan={3} className="border p-1">Пневмания</td>
+            <td colSpan={3} className="border p-1">ОРВ</td>
           </tr>
           <tr>
             {repeatBlock(<>
@@ -259,33 +270,31 @@ function SeeReport({setShowBody, headerRef}) {
           {listOfGroup.map(el => {
             const withCovid = [...withCovidAmb.filter(person => person.group_id__name === el.name),
               ...withCovidStat.filter(person => person.group_id__name === el.name)];
-            const withOrv = [...withRespiratornoAmb.filter(person => person.group_id__name === el.name),
-              ...withRespiratornoStat.filter(person => person.group_id__name === el.name),
-              ...withPnevmoniaAmb.filter(person => person.group_id__name === el.name),
+            const withPnevmania = [...withPnevmoniaAmb.filter(person => person.group_id__name === el.name),
               ...withPnevmoniaStat.filter(person => person.group_id__name === el.name)];
+            const withOrv = [...withRespiratornoAmb.filter(person => person.group_id__name === el.name),
+              ...withRespiratornoStat.filter(person => person.group_id__name === el.name)];
             const withOther = [...withNoInfectionAmb.filter(person => person.group_id__name === el.name),
               ...withNoInfectionStat.filter(person => person.group_id__name === el.name)];
             const karantin = [...withKarantin.filter(person => person.group_id__name === el.name)];
-            const remoteWork = [...onRemoteWork.filter(person => person.group_id__name === el.name)];
             return (
               <tr>
                 <td className="border p-1">{el.name}</td>
                 {filterBlock(withCovid)}
+                {filterBlock(withPnevmania)}
                 {filterBlock(withOrv)}
                 {filterBlock(withOther)}
                 {filterBlock(karantin)}
-                {filterBlock(remoteWork)}
               </tr>
             )
           })}
           <tr>
             <td className="border p-1">Итого</td>
             {filterBlock([...withCovidAmb, ...withCovidStat])}
-            {filterBlock([...withRespiratornoAmb, ...withRespiratornoStat,
-              ...withPnevmoniaAmb, ...withPnevmoniaStat])}
+            {filterBlock([...withPnevmoniaAmb, ...withPnevmoniaStat])}
+            {filterBlock([...withRespiratornoAmb, ...withRespiratornoStat])}
             {filterBlock([...withNoInfectionAmb, ...withNoInfectionStat])}
             {filterBlock(withKarantin)}
-            {filterBlock(onRemoteWork)}
           </tr>
         </table>
 

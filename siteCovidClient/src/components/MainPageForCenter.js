@@ -225,7 +225,7 @@ export default function MainPageForCenter({setShowBody}) {
           placeholderText="По какое число..."
           minDate={new Date(currDate.getFullYear(), currDate.getMonth(), objectModal.date)}
         />
-        {showExtraFields && <>
+        {showExtraFields && !!(listStatus.find(el => el.id === objectModal.extra_status_id && el.name.toLowerCase().indexOf('неинфекционное'))) && <>
           <p className="my-2">Тест на Covid</p>
           <div className="flex">
             <DatePicker
@@ -245,27 +245,27 @@ export default function MainPageForCenter({setShowBody}) {
               setExtraFields({...extraFields, test: e.target.value})
             }}/>
           </div>
-          {(!!extraFields.test_date || !!extraFields.test) && <>
-            <p className="my-2">Тест на Covid результат</p>
-            <div className="flex">
-              <DatePicker
-                className="rounded border border-blue-700 p-1 w-full"
-                selected={extraFields.test_result_date ? moment(extraFields.test_result_date, "DD.MM.YYYY").toDate() : null}
-                onChange={date => {
-                  setExtraFields({...extraFields, test_result_date: date ? date.toLocaleDateString('ru') : ''})
-                }}
-                dateFormat="dd.MM.yyyy"
-                customInput={<InputForDatePicker/>}
-                isClearable
-                placeholderText="Дата результата теста..."
-              />
-              <input className="w-full p-1 border border-blue-700 bg-white rounded outline-none"
-                     value={extraFields.test_result} placeholder="Результат теста на Covid..." onChange={(e) => {
-                setShowError(false);
-                setExtraFields({...extraFields, test_result: e.target.value})
-              }}/>
-            </div>
-          </>}
+
+          <p className="my-2">Тест на Covid результат</p>
+          <div className="flex">
+            <DatePicker
+              className="rounded border border-blue-700 p-1 w-full"
+              selected={extraFields.test_result_date ? moment(extraFields.test_result_date, "DD.MM.YYYY").toDate() : null}
+              onChange={date => {
+                setExtraFields({...extraFields, test_result_date: date ? date.toLocaleDateString('ru') : ''})
+              }}
+              dateFormat="dd.MM.yyyy"
+              customInput={<InputForDatePicker/>}
+              isClearable
+              placeholderText="Дата результата теста..."
+            />
+            <input className="w-full p-1 border border-blue-700 bg-white rounded outline-none"
+                   value={extraFields.test_result} placeholder="Результат теста на Covid..." onChange={(e) => {
+              setShowError(false);
+              setExtraFields({...extraFields, test_result: e.target.value})
+            }}/>
+          </div>
+
 
         </>}
         {showError && <p className="text-red-500 text-center">Вам необходимо заполнить все поля</p>}
