@@ -230,7 +230,7 @@ function SeeReport({setShowBody, headerRef}) {
               </tr>
             )
           })}
-          <tr>
+          <tr className="font-bold">
             <td className="border p-1">Итого</td>
             <td className="border p-1">{onWorkMilitary.length}</td>
             <td className="border p-1">{onWorkPeople.length}</td>
@@ -288,7 +288,7 @@ function SeeReport({setShowBody, headerRef}) {
               </tr>
             )
           })}
-          <tr>
+          <tr className="font-bold">
             <td className="border p-1">Итого</td>
             {filterBlock([...withCovidAmb, ...withCovidStat])}
             {filterBlock([...withPnevmoniaAmb, ...withPnevmoniaStat])}
@@ -302,19 +302,19 @@ function SeeReport({setShowBody, headerRef}) {
           Всего - <b>{withDisease.length}</b> <br/>
           в том числе:
         </p>
-        <p className="font-bold text-center ">
-          Не ОРВИ - {withNoInfectionAmb.length + withNoInfectionStat.length} чел.
-          ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionStat.filter(el => el.is_military).length} в/сл,
-          {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionStat.filter(el => !el.is_military).length} гп)
+        <p className="font-bold text-center mt-8">
+          Коронавирусная инфекция - {withCovidAmb.length + withCovidStat.length} чел.
+          ({withCovidAmb.filter(el => el.is_military).length + withCovidStat.filter(el => el.is_military).length} в/сл,
+          {withCovidAmb.filter(el => !el.is_military).length + withCovidStat.filter(el => !el.is_military).length} гп)
         </p>
         <div className="mt-1 text-center text-xs">
           {makeTableHeader()}
           <p className="font-bold text-center border p-1">Стационар</p>
-          {makeTableData(withNoInfectionStat)}
+          {makeTableData(withCovidStat)}
           <p className="font-bold text-center border p-1">Амбулаторно</p>
-          {makeTableData(withNoInfectionAmb)}
+          {makeTableData(withCovidAmb)}
         </div>
-        <p className="font-bold text-center mt-8">
+         <p className="font-bold text-center mt-8">
           Пневмония - {withPnevmoniaAmb.length + withPnevmoniaStat.length} чел.
           ({withPnevmoniaAmb.filter(el => el.is_military).length + withPnevmoniaStat.filter(el => el.is_military).length} в/сл,
           {withPnevmoniaAmb.filter(el => !el.is_military).length + withPnevmoniaStat.filter(el => !el.is_military).length} гп)
@@ -326,7 +326,6 @@ function SeeReport({setShowBody, headerRef}) {
           <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withPnevmoniaAmb)}
         </div>
-
         <p className="font-bold text-center mt-8">
           Острые респираторные вирусные инфекции (не коронавирусная
           инфекция) - {withRespiratornoStat.length + withRespiratornoAmb.length} чел.
@@ -341,8 +340,20 @@ function SeeReport({setShowBody, headerRef}) {
           {makeTableData(withRespiratornoAmb)}
         </div>
 
+        <p className="font-bold text-center ">
+         Неинфекционные (другие) заболевания - {withNoInfectionAmb.length + withNoInfectionStat.length} чел.
+          ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionStat.filter(el => el.is_military).length} в/сл,
+          {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionStat.filter(el => !el.is_military).length} гп)
+        </p>
+        <div className="mt-1 text-center text-xs">
+          {makeTableHeader()}
+          <p className="font-bold text-center border p-1">Стационар</p>
+          {makeTableData(withNoInfectionStat)}
+          <p className="font-bold text-center border p-1">Амбулаторно</p>
+          {makeTableData(withNoInfectionAmb)}
+        </div>
         <p className="font-bold text-center mt-8">
-          Число находящихся на карантине (изоляция) - {withKarantin.length} чел.
+          Карантин - {withKarantin.length} чел.
           ({withKarantin.filter(el => el.is_military).length} в/сл,
           {withKarantin.filter(el => !el.is_military).length} гп)
         </p>
@@ -350,18 +361,7 @@ function SeeReport({setShowBody, headerRef}) {
           {makeTableHeader()}
           {makeTableData(withKarantin)}
         </div>
-        <p className="font-bold text-center mt-8">
-          Коронавирусная инфекция - {withCovidAmb.length + withCovidStat.length} чел.
-          ({withCovidAmb.filter(el => el.is_military).length + withCovidStat.filter(el => el.is_military).length} в/сл,
-          {withCovidAmb.filter(el => !el.is_military).length + withCovidStat.filter(el => !el.is_military).length} гп)
-        </p>
-        <div className="mt-1 text-center text-xs">
-          {makeTableHeader()}
-          <p className="font-bold text-center border p-1">Стационар</p>
-          {makeTableData(withCovidStat)}
-          <p className="font-bold text-center border p-1">Амбулаторно</p>
-          {makeTableData(withCovidAmb)}
-        </div>
+
         <div className="mt-4 text-left">
           <p className="p-1">Офицер оперативной группы в/ч 51105</p>
           <Moment className=" p-1" format="DD.MM.YYYY">{startDate}</Moment>
