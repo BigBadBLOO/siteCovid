@@ -266,21 +266,21 @@ def setOneReport(request):
       obj = DayData.objects.filter(date=date).filter(userForControl_id=report['userForControl_id']).first()
       if obj is not None:
         obj.status = status
+        obj.comment = comment
         obj.save()
       else:
         obj = DayData.objects.create(
           date=date,
           status=status,
+          comment=comment,
           userForControl_id=report['userForControl_id']
         )
       if date != date_temp:
         ExtraDataForDayData.objects.create(data=obj, name='fromDiseaseDate', value=date_temp.strftime("%Y-%m-%d"))
-      if date == date_temp:
-        obj.comment = comment
-        obj.save()
-        if extraFields is not None:
-          ExtraDataForDayData.objects.filter(data_id=obj.id).delete()
-          for key in extraFields:
+      if extraFields is not None:
+        ExtraDataForDayData.objects.filter(data_id=obj.id).exclude(name='fromDiseaseDate').delete()
+        for key in extraFields:
+          if key != 't' or date == date_temp:
             ExtraDataForDayData.objects.create(data=obj, name=key, value=extraFields[key])
       date = date + datetime.timedelta(days=1)
   return HttpResponse(json.dumps({'ok': True}))
@@ -323,13 +323,17 @@ def getListOfReport(request):
         listGrouped = {}
         listOfDaysDataId = DayData.objects.filter(date__gte=dictFields['fromDiseaseDate']).filter(
           userForControl_id=o.userForControl_id).values_list('id', flat=True)
-        for field in ExtraDataForDayData.objects.filter(data_id__in=listOfDaysDataId).exclude(
-          name='fromDiseaseDate').values('data_id', 'name', 'value', 'data_id__date').order_by('data_id__date'):
+        for field in ExtraDataForDayData.objects.filter(data_id__in=listOfDaysDataId).filter(name='t').values('data_id', 'name', 'value', 'data_id__date').order_by('data_id__date'):
           temp = listGrouped[field['data_id']] if field['data_id'] in listGrouped is not None else {}
-          listGrouped[field['data_id']] = dict(temp, **{
-            field['name']: field['value'],
-            'date': (field['data_id__date']).strftime("%d.%m.%Y")
-          })
+          if field['data_id__date'] == datetime.date.today():
+            listGrouped[field['data_id']] = dict(temp, **dictFields, **{
+              'date': (field['data_id__date']).strftime("%d.%m.%Y")
+            })
+          else:
+            listGrouped[field['data_id']] = dict(temp, **{
+              field['name']: field['value'],
+              'date': (field['data_id__date']).strftime("%d.%m.%Y")
+            })
 
         answer['extraFields'] = list(listGrouped.values())
     resp.append(answer)

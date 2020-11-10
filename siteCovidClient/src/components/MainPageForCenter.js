@@ -44,17 +44,19 @@ export default function MainPageForCenter({setShowBody}) {
       el.extra_status_id = el.status_id;
       el.status_id = status.parent_id;
       setExtraStatus(listStatus.filter(el => el.parent_id === status.parent_id));
-      status.with_extraField ? Object.keys(extrafields).length === 0 && setExtraFields({
+      status.with_extraField && Object.keys(extrafields).length === 0 && setExtraFields({
         't': ''
-      }) : setExtraFields({});
+      })
+        // : setExtraFields({});
     } else if (children_status.length > 0) {
       el.extra_status_id = children_status[0].id;
       el.status_id = status.id;
-      children_status[0].with_extraField ? Object.keys(extrafields).length === 0 && setExtraFields({
+      children_status[0].with_extraField && Object.keys(extrafields).length === 0 && setExtraFields({
         't': ''
-      }) : setExtraFields({});
+      })
+    // : setExtraFields({});
     } else {
-      setExtraFields({});
+      // setExtraFields({});
       el.extra_status_id = null
     }
     return el
@@ -92,7 +94,8 @@ export default function MainPageForCenter({setShowBody}) {
     }
     setMassWithDate(tempMassWithDate)
   }, [startDate, endDate]);
-
+  console.log(extraFields);
+  console.log(objectModal);
   return (
     <div>
       <div>
@@ -124,7 +127,7 @@ export default function MainPageForCenter({setShowBody}) {
           <option value={8}>Сентябрь</option>
           <option value={9}>Октябрь</option>
           <option value={10}>Ноябрь</option>
-          <option value={11}>декабрь</option>
+          <option value={11}>Декабрь</option>
         </select>
         <div className="float-right">
           <Button className="" type='warning' text="Списки на проход" onClick={() => {
@@ -277,7 +280,10 @@ export default function MainPageForCenter({setShowBody}) {
         }}/>
 
         <Button className="my-4 mx-0 w-full" type="primary" text="Сохранить" onClick={() => {
-          if (('t' in extraFields && !extraFields.t) || ((!!extraFields.test || !!extraFields.test_date) && ('test_result_date' in extraFields && !extraFields.test_result))) {
+          if (('t' in extraFields && !extraFields.t) ||
+            ((!!extraFields.test_date) && ('test_date' in extraFields && !extraFields.test_result_date)) ||
+            (!('fromDiseaseDate' in extraFields) && objectModal.extra_status_id && !endDateForModal)
+          ) {
             setShowError(true);
             return
           }

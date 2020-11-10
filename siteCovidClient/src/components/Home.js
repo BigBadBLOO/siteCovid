@@ -28,7 +28,7 @@ function Home({user}) {
       case 'listForEntering':
         return (<ListForEntering headerRef={headerRef} setShowBody={setShowBody}/>);
       case 'report':
-        return (<SeeReport headerRef={headerRef} setShowBody={setShowBody}/>);
+        return (<SeeReport user={user} headerRef={headerRef} setShowBody={setShowBody}/>);
       default:
         return (mainButton)
     }
@@ -50,7 +50,7 @@ function Home({user}) {
       case 'listForEntering':
         return (<ListForEntering headerRef={headerRef} setShowBody={setShowBody}/>);
       case 'report':
-        return (<SeeReport headerRef={headerRef} setShowBody={setShowBody}/>);
+        return (<SeeReport user={user} headerRef={headerRef} setShowBody={setShowBody}/>);
       default:
         return (mainButtonForControl)
     }

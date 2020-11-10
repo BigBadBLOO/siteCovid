@@ -17,7 +17,6 @@ function makeTableData(mass) {
             <p className="border p-1 inline-block" style={{width: "13%"}}>{el.rank_id__name}</p>
             <p className="border p-1 inline-block w-3/12">{el.name}</p>
             <p className="border p-1 inline-block w-6/12 text-left">
-              {el.comment}
               {
                 !!el.extraFields && el.extraFields.map(dict => {
                   return <>
@@ -36,7 +35,7 @@ function makeTableData(mass) {
                   </>
                 })
               }
-
+              {el.comment}
             </p>
           </div>
         )
@@ -77,7 +76,7 @@ function filterBlock(mass) {
   </>
 }
 
-function SeeReport({setShowBody, headerRef}) {
+function SeeReport({user, setShowBody, headerRef}) {
   const [startDate, setStartDate] = useState(new Date());
   const printRef = createRef();
 
@@ -105,9 +104,10 @@ function SeeReport({setShowBody, headerRef}) {
     workWithServer.getListOfGroup().then(setListOfGroup)
   }, []);
 
-  // useEffect(() => {
-  //   getListOfReport();
-  // }, [startDate]);
+  useEffect(() => {
+    getListOfReport();
+  }, [startDate]);
+
   const onWorkAll = listOfPerson.filter(el => !el.status_id);
   const onWorkMilitary = onWorkAll.filter(el => el.is_military);
   const onWorkPeople = onWorkAll.filter(el => el.is_military === false);
@@ -151,13 +151,15 @@ function SeeReport({setShowBody, headerRef}) {
           printRef.current.classList.remove('hidden');
           headerRef.current.classList.remove('hidden');
         }}/>
-        {/*<DatePicker*/}
-        {/*  className="rounded border border-blue-700 p-1"*/}
-        {/*  selected={startDate}*/}
-        {/*  onChange={setStartDate}*/}
-        {/*  dateFormat="dd.MM.yyyy"*/}
-        {/*  customInput={<InputForDatePicker/>}*/}
-        {/*/>*/}
+        {user.is_control &&
+        <DatePicker
+          className="rounded border border-blue-700 p-1"
+          selected={startDate}
+          onChange={setStartDate}
+          dateFormat="dd.MM.yyyy"
+          customInput={<InputForDatePicker/>}
+        />
+        }
       </div>
 
       <div className="m-4">
@@ -314,7 +316,7 @@ function SeeReport({setShowBody, headerRef}) {
           <p className="font-bold text-center border p-1">Амбулаторно</p>
           {makeTableData(withCovidAmb)}
         </div>
-         <p className="font-bold text-center mt-8">
+        <p className="font-bold text-center mt-8">
           Пневмония - {withPnevmoniaAmb.length + withPnevmoniaStat.length} чел.
           ({withPnevmoniaAmb.filter(el => el.is_military).length + withPnevmoniaStat.filter(el => el.is_military).length} в/сл,
           {withPnevmoniaAmb.filter(el => !el.is_military).length + withPnevmoniaStat.filter(el => !el.is_military).length} гп)
@@ -341,7 +343,7 @@ function SeeReport({setShowBody, headerRef}) {
         </div>
 
         <p className="font-bold text-center ">
-         Неинфекционные (другие) заболевания - {withNoInfectionAmb.length + withNoInfectionStat.length} чел.
+          Неинфекционные (другие) заболевания - {withNoInfectionAmb.length + withNoInfectionStat.length} чел.
           ({withNoInfectionAmb.filter(el => el.is_military).length + withNoInfectionStat.filter(el => el.is_military).length} в/сл,
           {withNoInfectionAmb.filter(el => !el.is_military).length + withNoInfectionStat.filter(el => !el.is_military).length} гп)
         </p>
