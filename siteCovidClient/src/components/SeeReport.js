@@ -151,7 +151,7 @@ function SeeReport({user, setShowBody, headerRef}) {
           printRef.current.classList.remove('hidden');
           headerRef.current.classList.remove('hidden');
         }}/>
-        {user.is_control &&
+        {!user.is_control &&
         <DatePicker
           className="rounded border border-blue-700 p-1"
           selected={startDate}
