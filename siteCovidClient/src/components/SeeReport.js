@@ -35,7 +35,8 @@ function makeTableData(mass) {
                   </>
                 })
               }
-              {el.comment}
+
+              {el.comment && <><br/>{el.comment}</>}
             </p>
           </div>
         )
@@ -86,15 +87,18 @@ function SeeReport({user, setShowBody, headerRef}) {
   const getListOfReport = () => {
     workWithServer.getListOfReport({'date': startDate, 'includeExtraFields': true}).then(data => {
       setListOfPerson(prevState => prevState.map(el => {
-        let index = data.filter(obj => obj.userForControl_id === el.id);
-        if (index.length > 0) return {...el, ...index[0]};
+        let index = data.find(obj => obj.userForControl_id === el.id);
+        if (index) {
+          delete index['id'];
+          return {...el, ...index};
+        }
         delete el['comment'];
         delete el['status_id'];
         return el
       }))
     })
   };
-
+  console.log(listOfPerson);
   useEffect(() => {
     workWithServer.getListOfPerson().then(data => {
       setListOfPerson(data);
@@ -106,6 +110,7 @@ function SeeReport({user, setShowBody, headerRef}) {
 
   useEffect(() => {
     getListOfReport();
+    console.log('here')
   }, [startDate]);
 
   const onWorkAll = listOfPerson.filter(el => !el.status_id);
