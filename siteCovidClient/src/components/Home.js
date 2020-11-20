@@ -1,5 +1,5 @@
 import React, {createRef, useState} from "react";
-import Button from "./Button";
+import Button, {InputForDatePicker} from "./Button";
 import Header from "./Header";
 import {connect} from "react-redux";
 import ListOfPerson from "./ListOfPerson";
@@ -10,7 +10,6 @@ import Loader from "./Loader";
 import MainPageForCenter from "./MainPageForCenter";
 import ListOfPost from "./ListOfPost";
 
-
 function Home({user}) {
   const [showBody, setShowBody] = useState('nothing');
   const headerRef = createRef();
@@ -19,7 +18,7 @@ function Home({user}) {
 
   const bodyForCentre = () => {
     switch (showBody) {
-       case 'listOfPost':
+      case 'listOfPost':
         return (<ListOfPost setShowBody={setShowBody}/>);
       case 'listOfPerson':
         return (<ListOfPerson setShowBody={setShowBody}/>);

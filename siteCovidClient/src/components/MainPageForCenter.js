@@ -6,6 +6,7 @@ import MyModal from "./Modal";
 import clsx from "clsx";
 import DatePicker from "react-datepicker";
 import moment from "moment";
+import WorkWithDB from "./WorkWithDB";
 
 export default function MainPageForCenter({setShowBody}) {
   const curr = new Date();
@@ -105,6 +106,7 @@ export default function MainPageForCenter({setShowBody}) {
         <Button className="" type='primary' text="Управление л/с" onClick={() => {
           setShowBody('listOfPerson')
         }}/>
+        <WorkWithDB/>
         {/*<Button className="" type='primary' text="Сформировать отчет" onClick={() => {*/}
         {/*  setShowBody('makeReport')*/}
         {/*}}/>*/}
