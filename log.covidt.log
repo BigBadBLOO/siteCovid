@@ -1,0 +1,461 @@
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+July 12, 2021 - 07:49:01
+Django version 3.2.4, using settings 'siteCovidServer.settings'
+Starting development server at http://130.100.92.209:2020/
+Quit the server with CONTROL-C.
+[12/Jul/2021 07:49:46] "GET / HTTP/1.1" 200 2337
+[12/Jul/2021 07:49:46] "GET /static/js/main.b05afbf3.chunk.js HTTP/1.1" 200 248029
+[12/Jul/2021 07:49:46] "GET /static/css/2.9fca9f18.chunk.css HTTP/1.1" 200 21977
+[12/Jul/2021 07:49:46] "GET /static/js/2.6ff3729d.chunk.js HTTP/1.1" 200 598825
+[12/Jul/2021 07:49:46] "GET /static/css/main.eee5d90f.chunk.css HTTP/1.1" 200 2009404
+[12/Jul/2021 07:49:46] "POST /getListOfPerson/ HTTP/1.1" 200 2
+[12/Jul/2021 07:49:46] "POST /initMainInfo/ HTTP/1.1" 200 19308
+Not Found: /favicon.ico
+Internal Server Error: /initUser/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 35, in initUser
+    if user_profile.is_guest:
+AttributeError: 'NoneType' object has no attribute 'is_guest'
+[12/Jul/2021 07:49:47] "POST /initUser/ HTTP/1.1" 500 18709
+[12/Jul/2021 07:49:47] "GET /favicon.ico HTTP/1.1" 404 10098
+[12/Jul/2021 07:49:56] "POST /login/ HTTP/1.1" 200 15
+[12/Jul/2021 07:50:04] "POST /login/ HTTP/1.1" 200 17
+[12/Jul/2021 07:50:04] "GET / HTTP/1.1" 200 2337
+[12/Jul/2021 07:50:04] "GET /static/js/main.b05afbf3.chunk.js HTTP/1.1" 304 0
+[12/Jul/2021 07:50:04] "GET /static/css/2.9fca9f18.chunk.css HTTP/1.1" 304 0
+[12/Jul/2021 07:50:04] "GET /static/js/2.6ff3729d.chunk.js HTTP/1.1" 304 0
+[12/Jul/2021 07:50:04] "GET /static/css/main.eee5d90f.chunk.css HTTP/1.1" 304 0
+[12/Jul/2021 07:50:04] "POST /initUser/ HTTP/1.1" 200 5939
+[12/Jul/2021 07:50:04] "POST /initMainInfo/ HTTP/1.1" 200 19308
+[12/Jul/2021 07:50:04] "POST /getListOfPerson/ HTTP/1.1" 200 12780
+[12/Jul/2021 07:50:04] "POST /getListOfReport/ HTTP/1.1" 200 504
+[12/Jul/2021 07:54:39] "GET / HTTP/1.1" 200 2337
+[12/Jul/2021 07:54:39] "GET /static/css/2.9fca9f18.chunk.css HTTP/1.1" 304 0
+[12/Jul/2021 07:54:39] "GET /static/css/main.eee5d90f.chunk.css HTTP/1.1" 304 0
+[12/Jul/2021 07:54:39] "GET /static/js/2.6ff3729d.chunk.js HTTP/1.1" 304 0
+[12/Jul/2021 07:54:39] "GET /static/js/main.b05afbf3.chunk.js HTTP/1.1" 304 0
+Internal Server Error: /initMainInfo/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 64, in initMainInfo
+    'ranks': list(ranks.values()),
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 280, in __iter__
+    self._fetch_all()
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 1324, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 109, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/sql/compiler.py", line 1130, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/sql/compiler.py", line 1175, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 98, in execute
+    return super().execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 66, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 75, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+django.db.utils.OperationalError: database is locked
+[12/Jul/2021 07:54:45] "POST /initMainInfo/ HTTP/1.1" 500 20995
+Internal Server Error: /getListOfPerson/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 233, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 83, in getListOfPerson
+    user = User.objects.filter(id=request.user.id).first()
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 246, in inner
+    self._setup()
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 382, in _setup
+    self._wrapped = self._setupfunc()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/middleware.py", line 23, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/__init__.py", line 177, in get_user
+    user_id = _get_user_session_key(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 65, in __getitem__
+    return self._session[key]
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 238, in _get_session
+    self._session_cache = self.load()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/db.py", line 43, in load
+    s = self._get_session_from_db()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    expire_date__gt=timezone.now()
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 431, in get
+    num = len(clone)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 262, in __len__
+    self._fetch_all()
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 1324, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 51, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/sql/compiler.py", line 1175, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 98, in execute
+    return super().execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 66, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 75, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+django.db.utils.OperationalError: database is locked
+[12/Jul/2021 07:55:20] "POST /getListOfPerson/ HTTP/1.1" 500 22887
+Internal Server Error: /initUser/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 233, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 30, in initUser
+    user = User.objects.filter(id=request.user.id)
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 246, in inner
+    self._setup()
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 382, in _setup
+    self._wrapped = self._setupfunc()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/middleware.py", line 23, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/__init__.py", line 177, in get_user
+    user_id = _get_user_session_key(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 65, in __getitem__
+    return self._session[key]
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 238, in _get_session
+    self._session_cache = self.load()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/db.py", line 43, in load
+    s = self._get_session_from_db()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    expire_date__gt=timezone.now()
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 431, in get
+    num = len(clone)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 262, in __len__
+    self._fetch_all()
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 1324, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 51, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/sql/compiler.py", line 1175, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 98, in execute
+    return super().execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 66, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 75, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+django.db.utils.OperationalError: database is locked
+[12/Jul/2021 07:55:20] "POST /initUser/ HTTP/1.1" 500 22844
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 233, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 246, in inner
+    self._setup()
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 382, in _setup
+    self._wrapped = self._setupfunc()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/middleware.py", line 23, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/__init__.py", line 177, in get_user
+    user_id = _get_user_session_key(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 65, in __getitem__
+    return self._session[key]
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/base.py", line 238, in _get_session
+    self._session_cache = self.load()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/db.py", line 43, in load
+    s = self._get_session_from_db()
+  File "/usr/local/lib/python3.6/dist-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    expire_date__gt=timezone.now()
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 431, in get
+    num = len(clone)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 262, in __len__
+    self._fetch_all()
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 1324, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/query.py", line 51, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/models/sql/compiler.py", line 1175, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 98, in execute
+    return super().execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 66, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 75, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/dist-packages/django/db/backends/sqlite3/base.py", line 423, in execute
+    return Database.Cursor.execute(self, query, params)
+django.db.utils.OperationalError: database is locked
+[12/Jul/2021 07:55:25] "POST /getListOfReport/ HTTP/1.1" 500 22836
+[12/Jul/2021 07:55:39] "POST /login/ HTTP/1.1" 200 17
+[12/Jul/2021 07:55:40] "GET / HTTP/1.1" 200 2337
+[12/Jul/2021 07:55:40] "GET /static/js/main.b05afbf3.chunk.js HTTP/1.1" 304 0
+[12/Jul/2021 07:55:40] "GET /static/js/2.6ff3729d.chunk.js HTTP/1.1" 304 0
+[12/Jul/2021 07:55:40] "GET /static/css/main.eee5d90f.chunk.css HTTP/1.1" 304 0
+[12/Jul/2021 07:55:40] "GET /static/css/2.9fca9f18.chunk.css HTTP/1.1" 304 0
+[12/Jul/2021 07:55:40] "POST /initMainInfo/ HTTP/1.1" 200 24120
+[12/Jul/2021 07:55:40] "POST /initUser/ HTTP/1.1" 200 6751
+[12/Jul/2021 07:55:40] "POST /getListOfPerson/ HTTP/1.1" 200 281636
+[12/Jul/2021 07:55:40] "POST /getListOfReport/ HTTP/1.1" 200 1780656
+[12/Jul/2021 07:55:45] "POST /logout/ HTTP/1.1" 200 2
+[12/Jul/2021 07:55:50] "POST /login/ HTTP/1.1" 200 17
+[12/Jul/2021 07:55:50] "GET / HTTP/1.1" 200 2337
+[12/Jul/2021 07:55:50] "POST /initUser/ HTTP/1.1" 200 6835
+[12/Jul/2021 07:55:50] "POST /initMainInfo/ HTTP/1.1" 200 24120
+[12/Jul/2021 07:55:50] "POST /getListOfPerson/ HTTP/1.1" 200 32926
+[12/Jul/2021 07:55:50] "POST /getListOfReport/ HTTP/1.1" 200 355116
+[12/Jul/2021 07:55:58] "POST /getListOfCity/ HTTP/1.1" 200 340
+[12/Jul/2021 07:56:00] "POST /getListOfReport/ HTTP/1.1" 200 355116
+[12/Jul/2021 07:56:02] "POST /logout/ HTTP/1.1" 200 2
+[12/Jul/2021 07:56:10] "POST /login/ HTTP/1.1" 200 17
+[12/Jul/2021 07:56:10] "GET / HTTP/1.1" 200 2337
+[12/Jul/2021 07:56:10] "POST /initMainInfo/ HTTP/1.1" 200 24120
+[12/Jul/2021 07:56:10] "POST /getListOfPerson/ HTTP/1.1" 200 2
+[12/Jul/2021 07:56:10] "POST /initUser/ HTTP/1.1" 200 6777
+[12/Jul/2021 07:56:10] "POST /getListOfReport/ HTTP/1.1" 200 56
+[12/Jul/2021 07:58:32] "POST /getListOfReport/ HTTP/1.1" 200 56
+[12/Jul/2021 08:01:13] "POST /getListOfReport/ HTTP/1.1" 200 56
+[12/Jul/2021 08:01:18] "POST /getListOfReport/ HTTP/1.1" 200 56
+[12/Jul/2021 08:13:35] "POST /getListOfReport/ HTTP/1.1" 200 56
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 09:03:48] "POST /getListOfReport/ HTTP/1.1" 500 18887
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 09:03:53] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 09:33:55] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 09:40:39] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 09:44:25] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 09:57:56] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 09:58:07] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 11:45:11] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 11:49:17] "POST /getListOfReport/ HTTP/1.1" 500 18796
+Internal Server Error: /getListOfReport/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/dist-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/sysadmin/siteCovid_test/site/Site/views.py", line 144, in getListOfReport
+    if user.profile.is_guest:
+  File "/usr/local/lib/python3.6/dist-packages/django/utils/functional.py", line 247, in inner
+    return func(self._wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'profile'
+[12/Jul/2021 11:49:18] "POST /getListOfReport/ HTTP/1.1" 500 18796
+/home/sysadmin/siteCovid_test/site/Site/views.py changed, reloading.
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+July 12, 2021 - 13:06:59
+Django version 3.2.4, using settings 'siteCovidServer.settings'
+Starting development server at http://130.100.92.209:2020/
+Quit the server with CONTROL-C.
